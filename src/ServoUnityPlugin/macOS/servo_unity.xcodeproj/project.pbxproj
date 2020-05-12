@@ -1,0 +1,326 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A49CC1524690FC400B77CCA /* OpenGL.framework */; };
+		4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */; };
+		4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8112464FBE000E47295 /* servo_unity_log.c */; };
+		4A92A8192464FBE000E47295 /* ServoUnityWindowGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */; };
+		4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8142464FBE000E47295 /* servo_unity.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		4A49CC1524690FC400B77CCA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		4A92A8052464FB8400E47295 /* servo_unity.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = servo_unity.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A92A8082464FB8400E47295 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
+		4A92A80E2464FBE000E47295 /* servo_unity_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_log.h; path = ../servo_unity_log.h; sourceTree = "<group>"; };
+		4A92A80F2464FBE000E47295 /* ServoUnityWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServoUnityWindow.h; path = ../ServoUnityWindow.h; sourceTree = "<group>"; };
+		4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ServoUnityWindowDX11.cpp; path = ../ServoUnityWindowDX11.cpp; sourceTree = "<group>"; };
+		4A92A8112464FBE000E47295 /* servo_unity_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = servo_unity_log.c; path = ../servo_unity_log.c; sourceTree = "<group>"; };
+		4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ServoUnityWindowGL.cpp; path = ../ServoUnityWindowGL.cpp; sourceTree = "<group>"; };
+		4A92A8132464FBE000E47295 /* ServoUnityWindowGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServoUnityWindowGL.h; path = ../ServoUnityWindowGL.h; sourceTree = "<group>"; };
+		4A92A8142464FBE000E47295 /* servo_unity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = servo_unity.cpp; path = ../servo_unity.cpp; sourceTree = "<group>"; };
+		4A92A8152464FBE000E47295 /* ServoUnityWindowDX11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServoUnityWindowDX11.h; path = ../ServoUnityWindowDX11.h; sourceTree = "<group>"; };
+		4A92A8162464FBE000E47295 /* servo_unity_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_c.h; path = ../servo_unity_c.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4A92A8022464FB8400E47295 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4A49CC1424690FC400B77CCA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4A49CC1524690FC400B77CCA /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4A92A7FC2464FB8400E47295 = {
+			isa = PBXGroup;
+			children = (
+				4A92A8162464FBE000E47295 /* servo_unity_c.h */,
+				4A92A8142464FBE000E47295 /* servo_unity.cpp */,
+				4A92A80F2464FBE000E47295 /* ServoUnityWindow.h */,
+				4A92A8152464FBE000E47295 /* ServoUnityWindowDX11.h */,
+				4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */,
+				4A92A8132464FBE000E47295 /* ServoUnityWindowGL.h */,
+				4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */,
+				4A92A80E2464FBE000E47295 /* servo_unity_log.h */,
+				4A92A8112464FBE000E47295 /* servo_unity_log.c */,
+				4A92A8082464FB8400E47295 /* Info.plist */,
+				4A92A8062464FB8400E47295 /* Products */,
+				4A49CC1424690FC400B77CCA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		4A92A8062464FB8400E47295 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A92A8052464FB8400E47295 /* servo_unity.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4A92A8042464FB8400E47295 /* servo_unity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A92A80B2464FB8400E47295 /* Build configuration list for PBXNativeTarget "servo_unity" */;
+			buildPhases = (
+				4A92A8012464FB8400E47295 /* Sources */,
+				4A92A8022464FB8400E47295 /* Frameworks */,
+				4A92A8032464FB8400E47295 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = servo_unity;
+			productName = servo_unity;
+			productReference = 4A92A8052464FB8400E47295 /* servo_unity.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4A92A7FD2464FB8400E47295 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1140;
+				ORGANIZATIONNAME = Mozilla;
+				TargetAttributes = {
+					4A92A8042464FB8400E47295 = {
+						CreatedOnToolsVersion = 11.4.1;
+					};
+				};
+			};
+			buildConfigurationList = 4A92A8002464FB8400E47295 /* Build configuration list for PBXProject "servo_unity" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4A92A7FC2464FB8400E47295;
+			productRefGroup = 4A92A8062464FB8400E47295 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4A92A8042464FB8400E47295 /* servo_unity */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4A92A8032464FB8400E47295 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4A92A8012464FB8400E47295 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */,
+				4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */,
+				4A92A8192464FBE000E47295 /* ServoUnityWindowGL.cpp in Sources */,
+				4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4A92A8092464FB8400E47295 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					GL_SILENCE_DEPRECATION,
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Applications/Unity/Hub/Editor/2019.3.13f1/Unity.app/Contents/PluginAPI;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		4A92A80A2464FB8400E47295 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = GL_SILENCE_DEPRECATION;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Applications/Unity/Hub/Editor/2019.3.13f1/Unity.app/Contents/PluginAPI;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		4A92A80C2464FB8400E47295 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEVELOPMENT_TEAM = 7ER2WP8VB3;
+				DSTROOT = "${SRCROOT}/../../ServoUnity/Assets/Plugins";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = .;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.mozilla.mr.servo-unity";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		4A92A80D2464FB8400E47295 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEVELOPMENT_TEAM = 7ER2WP8VB3;
+				DSTROOT = "${SRCROOT}/../../ServoUnity/Assets/Plugins";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = .;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.mozilla.mr.servo-unity";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4A92A8002464FB8400E47295 /* Build configuration list for PBXProject "servo_unity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A92A8092464FB8400E47295 /* Debug */,
+				4A92A80A2464FB8400E47295 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4A92A80B2464FB8400E47295 /* Build configuration list for PBXNativeTarget "servo_unity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A92A80C2464FB8400E47295 /* Debug */,
+				4A92A80D2464FB8400E47295 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4A92A7FD2464FB8400E47295 /* Project object */;
+}

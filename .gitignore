@@ -45,3 +45,5 @@ Source/ServoUnity/**/*.sln
 *.apk
 *.app
 
+ServoUnity.sln
+Assembly-CSharp.csproj

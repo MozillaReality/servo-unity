@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "servo_unity", "servo_unity.vcxproj", "{2A380EE0-0A62-4904-B635-E4DF00C8F57D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Debug|x64.ActiveCfg = Debug|x64
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Debug|x64.Build.0 = Debug|x64
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Debug|x86.ActiveCfg = Debug|Win32
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Debug|x86.Build.0 = Debug|Win32
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Release|x64.ActiveCfg = Release|x64
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Release|x64.Build.0 = Release|x64
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Release|x86.ActiveCfg = Release|Win32
+		{2A380EE0-0A62-4904-B635-E4DF00C8F57D}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CDE1F452-0625-4F07-8065-82F12708ABD8}
+	EndGlobalSection
+EndGlobal
