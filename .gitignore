@@ -47,3 +47,4 @@ Source/ServoUnity/**/*.sln
 
 ServoUnity.sln
 Assembly-CSharp.csproj
+src/ServoUnity/Assets/Plugins/servo_unity.bundle

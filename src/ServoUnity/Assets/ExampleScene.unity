@@ -223,6 +223,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1060951311}
   - component: {fileID: 1060951310}
+  - component: {fileID: 1060951309}
   m_Layer: 0
   m_Name: ServoRoot
   m_TagString: Untagged
@@ -230,6 +231,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1060951309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060951308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef17f9cb4a8ec4e18abe02c4ea3c259c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reticleTexture: {fileID: 2800000, guid: de04a38c3e75542f7bb28d8b70e59685, type: 3}
+  reticleRadius: 0.01
+  maximumPointerDistance: 100
 --- !u!114 &1060951310
 MonoBehaviour:
   m_ObjectHideFlags: 0
