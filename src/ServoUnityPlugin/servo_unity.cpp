@@ -21,6 +21,7 @@
 #include <string>
 #include <assert.h>
 #include <map>
+#include "simpleservo.h"
 
 //
 // Unity low-level plugin interface.
@@ -41,14 +42,14 @@ static char *s_ResourcesPath = NULL;
 
 static PFN_WINDOWCREATEDCALLBACK m_windowCreatedCallback = nullptr;
 static PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback = nullptr;
-static PFN_FULLSCREENBEGINCALLBACK m_fullScreenBeginCallback = nullptr;
-static PFN_FULLSCREENENDCALLBACK m_fullScreenEndCallback = nullptr;
 static PFN_BROWSEREVENTCALLBACK m_browserEventCallback = nullptr;
 
 static std::map<int, std::unique_ptr<ServoUnityWindow>> s_windows;
 static int s_windowIndexNext = 1;
 
 static bool s_param_CloseNativeWindowOnClose = true;
+
+static const char *s_servoVersion = nullptr; // To avoid repeated leaking of servo's version string, we'll stash it here.
 
 // --------------------------------------------------------------------------
 
@@ -165,16 +166,6 @@ extern "C" UnityRenderingEvent UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API GetRen
 // ServoUnity plugin implementation.
 //
 
-void servoUnityRegisterFullScreenBeginCallback(PFN_FULLSCREENBEGINCALLBACK fullScreenBeginCallback)
-{
-	m_fullScreenBeginCallback = fullScreenBeginCallback;
-}
-
-void servoUnityRegisterFullScreenEndCallback(PFN_FULLSCREENENDCALLBACK fullScreenEndCallback)
-{
-	m_fullScreenEndCallback = fullScreenEndCallback;
-}
-
 void servoUnityRegisterLogCallback(PFN_LOGCALLBACK logCallback)
 {
 	servoUnityLogSetLogger(logCallback, 1); // 1 -> only callback on same thread, as required e.g. by C# interop.
@@ -191,8 +182,14 @@ bool servoUnityGetVersion(char *buffer, int length)
 {
 	if (!buffer) return false;
 
-	const char *version = SERVO_UNITY_PLUGIN_VERSION; // TODO: replace with method that fetches the actual Servo version.
-	strncpy(buffer, version, length - 1); buffer[length - 1] = '\0';
+    if (!s_servoVersion) {
+        s_servoVersion = servo_version();
+        if (!s_servoVersion) {
+            SERVOUNITYLOGw("Could not read servo version.\n");
+            return false;
+        }
+    }
+	strncpy(buffer, s_servoVersion, length - 1); buffer[length - 1] = '\0'; // Guarantee nul-termination, even if truncated.
 	return true;
 }
 

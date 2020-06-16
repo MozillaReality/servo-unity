@@ -42,12 +42,6 @@ public class ServoUnityPlugin
     private ServoUnityPluginBrowserEventCallback browserEventCallback = null;
     private GCHandle browserEventCallbackGCH;
 
-    private ServoUnityPluginFullScreenBeginCallback fullScreenBeginCallback = null;
-    private GCHandle fullScreenBeginCallbackGCH;
-    
-    private ServoUnityPluginFullEndCallback fullScreenEndCallback = null;
-    private GCHandle fullScreenEndCallbackGCH;
-    
     public void ServoUnityRegisterLogCallback(ServoUnityPluginLogCallback lcb)
     {
         logCallback = lcb; // Set or unset.
@@ -62,36 +56,6 @@ public class ServoUnityPlugin
         {
             // If unsetting, free the callback stub after deregistering the callback on the native side.
             logCallbackGCH.Free();
-        }
-    }
-
-    public void ServoUnityRegisterFullScreenBeginCallback(ServoUnityPluginFullScreenBeginCallback fsbc)
-    {
-        fullScreenBeginCallback = fsbc;
-        if (fsbc != null)
-        {
-            fullScreenBeginCallbackGCH = GCHandle.Alloc(fullScreenBeginCallback);
-        }
-
-        ServoUnityPlugin_pinvoke.servoUnityRegisterFullScreenBeginCallback(fullScreenBeginCallback);
-        if (fsbc == null)
-        {
-            fullScreenBeginCallbackGCH.Free();
-        }
-    }
-
-    public void ServoUnityRegisterFullScreenEndCallback(ServoUnityPluginFullEndCallback fsec)
-    {
-        fullScreenEndCallback = fsec;
-        if (fsec != null)
-        {
-            fullScreenEndCallbackGCH = GCHandle.Alloc(fullScreenEndCallback);
-        }
-
-        ServoUnityPlugin_pinvoke.servoUnityRegisterFullScreenEndCallback(fullScreenEndCallback);
-        if (fsec == null)
-        {
-            fullScreenEndCallbackGCH.Free();
         }
     }
 
@@ -235,20 +199,11 @@ public class ServoUnityPlugin
 
     public enum ServoUnityBrowserEventType
     {
-        None = 0,
-        IME = 1,
-        Shutdown = 2,
-        Fullscreen = 3,
-        Total = 4
-    };
-
-    public enum ServoUnityBrowserEventState
-    {
-        None = 0,
-        Blur = 1,
-        Focus = 2,
-        Fullscreen_Enter = 3,
-        Fullscreen_Exit = 4,
+        NOP = 0,
+        Shutdown = 1,
+        LoadStateChanged = 2,
+        FullscreenStateChanged = 3,
+        IMEStateChanged = 4,
         Total = 5
     };
 

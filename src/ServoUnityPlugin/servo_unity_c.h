@@ -120,6 +120,15 @@ enum {
 	ServoUnityVideoProjection_180TB = 5, // 180 top to bottom
 	ServoUnityVideoProjection_3D = 6 // 3D side by side
 };
+
+enum {
+    ServoUnityBrowserEvent_NOP = 0,
+    ServoUnityBrowserEvent_Shutdown = 1,
+    ServoUnityBrowserEvent_LoadStateChanged = 2, // eventData1: 0=LoadEnded, 1=LoadStarted,
+    ServoUnityBrowserEvent_FullscreenStateChanged = 3, // eventData1: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
+    ServoUnityBrowserEvent_IMEStateChanged = 4 // eventData1: 0=HideIME, 1=ShowIME
+};
+
 //
 // ServoUnity custom plugin interface API.
 //
@@ -130,10 +139,6 @@ typedef void (SERVO_UNITY_CALLBACK *PFN_WINDOWCREATEDCALLBACK)(int uidExt, int w
 
 typedef void (SERVO_UNITY_CALLBACK *PFN_WINDOWRESIZEDCALLBACK)(int uidExt, int pixelWidth, int pixelHeight);
 
-typedef void (SERVO_UNITY_CALLBACK *PFN_FULLSCREENBEGINCALLBACK)(int pixelWidth, int pixelHeight, int format, int projection);
-
-typedef void (SERVO_UNITY_CALLBACK *PFN_FULLSCREENENDCALLBACK)();
-
 typedef void (SERVO_UNITY_CALLBACK *PFN_BROWSEREVENTCALLBACK)(int uidExt, int eventType, int eventData1, int eventData2);
 
 /**
@@ -142,10 +147,6 @@ typedef void (SERVO_UNITY_CALLBACK *PFN_BROWSEREVENTCALLBACK)(int uidExt, int ev
  * first so that the callback is unregistered.
  */
 SERVO_UNITY_EXTERN void servoUnityRegisterLogCallback(PFN_LOGCALLBACK logCcallback);
-
-SERVO_UNITY_EXTERN void servoUnityRegisterFullScreenBeginCallback(PFN_FULLSCREENBEGINCALLBACK);
-
-SERVO_UNITY_EXTERN void servoUnityRegisterFullScreenEndCallback(PFN_FULLSCREENENDCALLBACK);
 
 SERVO_UNITY_EXTERN void servoUnitySetLogLevel(const int logLevel);
 

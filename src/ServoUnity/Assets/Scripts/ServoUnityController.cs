@@ -124,10 +124,6 @@ public class ServoUnityController : MonoBehaviour
                 break;
         }
 
-        // Register the full screen video callbacks
-        servo_unity_plugin.ServoUnityRegisterFullScreenBeginCallback(HandleFullScreenBegin);
-        servo_unity_plugin.ServoUnityRegisterFullScreenEndCallback(HandleFullScreenEnd);
-
         // Give the plugin a place to look for resources.
 
         string resourcesPath = Application.streamingAssetsPath;
@@ -200,9 +196,6 @@ public class ServoUnityController : MonoBehaviour
                 break;
         }
 
-        servo_unity_plugin.ServoUnityRegisterFullScreenBeginCallback(null);
-        servo_unity_plugin.ServoUnityRegisterFullScreenEndCallback(null);
-
         servo_unity_plugin = null;
     }
 
@@ -234,30 +227,77 @@ public class ServoUnityController : MonoBehaviour
     [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginBrowserEventCallback))]
     void OnServoBrowserEvent(int uid, int eventType, int eventData1, int eventData2)
     {
-        ServoUnityPlugin.ServoUnityBrowserEventState eventState = (ServoUnityPlugin.ServoUnityBrowserEventState) eventData1;
-        if ((ServoUnityPlugin.ServoUnityBrowserEventType) eventType == ServoUnityPlugin.ServoUnityBrowserEventType.IME)
+        switch ((ServoUnityPlugin.ServoUnityBrowserEventType)eventType)
         {
-            switch (eventState)
-            {
-                case ServoUnityPlugin.ServoUnityBrowserEventState.Blur:
-                    break;
-                case ServoUnityPlugin.ServoUnityBrowserEventState.Focus:
-                    break;
-                default:
-                    break;
-            }
-        }
-        else if ((ServoUnityPlugin.ServoUnityBrowserEventType) eventType == ServoUnityPlugin.ServoUnityBrowserEventType.Fullscreen)
-        {
-            switch (eventState)
-            {
-                case ServoUnityPlugin.ServoUnityBrowserEventState.Fullscreen_Enter:
-                    break;
-                case ServoUnityPlugin.ServoUnityBrowserEventState.Fullscreen_Exit:
-                    break;
-                default:
-                    break;
-            }
+            case ServoUnityPlugin.ServoUnityBrowserEventType.NOP:
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.Shutdown:
+                // Browser is shutting down. So should we.
+                OnApplicationQuit();
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.LoadStateChanged:
+                {
+                    switch (eventData1)
+                    {
+                        case 0:
+                            // Load ended.
+                            Debug.Log("Servo browser event: load ended.");
+                            break;
+                        case 1:
+                            // Load began.
+                            Debug.Log("Servo browser event: load began.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.IMEStateChanged:
+                {
+                    switch (eventData1)
+                    {
+                        case 0:
+                            // Hide IME.
+                            Debug.Log("Servo browser event: hide IME.");
+                            break;
+                        case 1:
+                            // Show IME.
+                            Debug.Log("Servo browser event: show IME.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.FullscreenStateChanged:
+                {
+                    switch (eventData1)
+                    {
+                        case 0:
+                            // Will enter fullscreen. Should e.g. hide windows and other UI.
+                            Debug.Log("Servo browser event: will enter fullscreen.");
+                            break;
+                        case 1:
+                            // Did enter fullscreen. Should e.g. show an "exit fullscreen" control.
+                            Debug.Log("Servo browser event: did enter fullscreen.");
+                            break;
+                        case 2:
+                            // Will exit fullscreen. Should e.g. hide "exit fullscreen" control.
+                            Debug.Log("Servo browser event: will exit fullscreen.");
+                            break;
+                        case 3:
+                            // Did exit fullscreen. Should e.g. show windows and other UI.
+                            Debug.Log("Servo browser event: did exit fullscreen.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            default:
+                Debug.Log("Servo browser event: unknown event.");
+                break;
+
         }
     }
 

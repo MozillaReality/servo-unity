@@ -23,6 +23,7 @@
 #endif
 #include <stdlib.h>
 #include "servo_unity_log.h"
+#include "simpleservo.h"
 
 void ServoUnityWindowGL::initDevice() {
 #ifdef _WIN32
@@ -228,18 +229,22 @@ void ServoUnityWindowGL::pointerExit() {
 
 void ServoUnityWindowGL::pointerOver(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerOver(%d, %d)\n", x, y);
+    mouse_move(x, y);
 }
 
 void ServoUnityWindowGL::pointerPress(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerPress(%d, %d)\n", x, y);
+    mouse_down(x, y, CMouseButton::Left);
 }
 
 void ServoUnityWindowGL::pointerRelease(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerRelease(%d, %d)\n", x, y);
+    mouse_up(x, y, CMouseButton::Left);
 }
 
 void ServoUnityWindowGL::pointerScrollDiscrete(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d)\n", x, y);
+    scroll(x, y, 0, 0);
 }
 
 void ServoUnityWindowGL::keyPress(int charCode) {
