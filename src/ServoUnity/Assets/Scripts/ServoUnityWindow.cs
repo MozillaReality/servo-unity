@@ -14,12 +14,12 @@ using UnityEngine.UI;
 
 public class ServoUnityWindow : ServoUnityPointableSurface
 {
-    public static Vector2Int DefaultSizeToRequest = new Vector2Int(1920, 1080);
-
+    public int DefaultWidthToRequest = 1920;
+    public int DefaultHeightToRequest = 1080;
     public bool flipX = false;
     public bool flipY = false;
     private static float DefaultWidth = 3.0f;
-    private float Width = DefaultWidth;
+    public float Width = DefaultWidth;
     private float Height;
     private float textureScaleU;
     private float textureScaleV;
@@ -115,7 +115,7 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         Debug.Log("ServoUnityWindow.Start()");
 
         if (_windowIndex == 0) {
-            servo_unity_plugin?.ServoUnityRequestNewWindow(GetInstanceID(), DefaultSizeToRequest.x, DefaultSizeToRequest.y);
+            servo_unity_plugin?.ServoUnityRequestNewWindow(GetInstanceID(), DefaultWidthToRequest, DefaultHeightToRequest);
         }
     }
 
@@ -131,8 +131,8 @@ public class ServoUnityWindow : ServoUnityPointableSurface
     public void RequestSizeMultiple(float sizeMultiple)
     {
         Width = DefaultWidth * sizeMultiple;
-        Resize(Mathf.FloorToInt(DefaultSizeToRequest.x * sizeMultiple),
-            Mathf.FloorToInt(DefaultSizeToRequest.y * sizeMultiple));
+        Resize(Mathf.FloorToInt(DefaultWidthToRequest * sizeMultiple),
+            Mathf.FloorToInt(DefaultHeightToRequest * sizeMultiple));
     }
 
     public bool Resize(int widthPixels, int heightPixels)

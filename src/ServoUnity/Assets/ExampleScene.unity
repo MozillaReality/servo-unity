@@ -401,5 +401,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e721b7a68a34eb9bbacd569778b19d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DefaultWidthToRequest: 1920
+  DefaultHeightToRequest: 1080
   flipX: 0
   flipY: 0
+  Width: 3
