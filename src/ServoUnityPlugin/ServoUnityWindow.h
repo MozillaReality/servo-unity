@@ -44,7 +44,7 @@ public:
 	int uid() { return m_uid; }
 	int uidExt() { return m_uidExt; }
 	void setUidExt(int uidExt) { m_uidExt = uidExt; }
-	virtual bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback) = 0;
+	virtual bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback) = 0;
 	virtual RendererAPI rendererAPI() = 0;
 	virtual Size size() = 0;
 	virtual void setSize(Size size) = 0;

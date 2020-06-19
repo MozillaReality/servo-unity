@@ -38,7 +38,10 @@ ServoUnityWindowDX11::ServoUnityWindowDX11(int uid, int uidExt, Size size) :
 	m_servoTexHandle(nullptr),
 	m_size(size),
 	m_format(ServoUnityTextureFormat_Invalid),
-	m_unityTexPtr(nullptr)
+    m_unityTexPtr(nullptr),
+    m_windowCreatedCallback(nullptr),
+    m_windowResizedCallback(nullptr),
+    m_browserEventCallback(nullptr)
 {
 }
 
@@ -70,10 +73,11 @@ static int getServoUnityTextureFormatForDXGIFormat(DXGI_FORMAT format)
 	}
 }
 
-bool ServoUnityWindowDX11::init(PFN_WINDOWCREATIONREQUESTCOMPLETED windowCreationRequestCompletedCallback)
+bool ServoUnityWindowDX11::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
 {
-	ServoUnityWindow::init(windowCreationRequestCompletedCallback);
-
+    m_windowCreatedCallback = windowCreatedCallback;
+    m_windowResizedCallback = windowResizedCallback;
+    m_browserEventCallback = browserEventCallback;
     // TODO: Get Servo texture handle into m_servoTexHandle.
     if (!m_servoTexHandle) {
 		SERVOUNITYLOGe("Error: Servo texture handle is null.\n");
@@ -90,7 +94,7 @@ bool ServoUnityWindowDX11::init(PFN_WINDOWCREATIONREQUESTCOMPLETED windowCreatio
 			m_size = Size({ (int)descServo.Width, (int)descServo.Height });
             m_format = getServoUnityTextureFormatForDXGIFormat(descServo.Format);
 
-			if (windowCreatedCallback) (*windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
+			if (m_windowCreatedCallback) (*m_windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
 		}
 	}
 
@@ -106,6 +110,8 @@ ServoUnityWindow::Size ServoUnityWindowDX11::size() {
 
 void ServoUnityWindowDX11::setSize(ServoUnityWindow::Size size) {
 	// TODO: request change in the Servo window size.
+
+    if (m_windowResizedCallback) (*m_windowResizedCallback)(m_uidExt, m_size.w, m_size.h);
 }
 
 void ServoUnityWindowDX11::setNativePtr(void* texPtr) {

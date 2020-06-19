@@ -135,27 +135,37 @@ enum {
 
 typedef void (SERVO_UNITY_CALLBACK *PFN_LOGCALLBACK)(const char* msg);
 
+///
+/// Whenever a window is created (either because one was requested via
+/// servoUnityRequestNewWindow, or when a browser action caused a new
+/// window to be created), this callback will be invoked.
+/// @param uidExt If the window was created in response to a request
+///     to servoUnityRequestNewWindow the value passed in parameter
+///     uidExt will be set to that value, otherwise it will be zero.
+/// @param windowIndex The value of parameter windowIndex should be
+///     used in subsequent API calls to specify this particular window as the target.
+///
 typedef void (SERVO_UNITY_CALLBACK *PFN_WINDOWCREATEDCALLBACK)(int uidExt, int windowIndex, int pixelWidth, int pixelHeight, int format);
 
 typedef void (SERVO_UNITY_CALLBACK *PFN_WINDOWRESIZEDCALLBACK)(int uidExt, int pixelWidth, int pixelHeight);
 
 typedef void (SERVO_UNITY_CALLBACK *PFN_BROWSEREVENTCALLBACK)(int uidExt, int eventType, int eventData1, int eventData2);
 
-/**
- * Registers a callback function to use when a message is logged in the plugin.
- * If the callback is to become invalid, be sure to call this function with NULL
- * first so that the callback is unregistered.
- */
+///
+/// Registers a callback function to use when a message is logged in the plugin.
+/// If the callback is to become invalid, be sure to call this function with NULL
+/// first so that the callback is unregistered.
+///
 SERVO_UNITY_EXTERN void servoUnityRegisterLogCallback(PFN_LOGCALLBACK logCcallback);
 
 SERVO_UNITY_EXTERN void servoUnitySetLogLevel(const int logLevel);
 
-/**
- * Gets the plugin version as a C string, such as "1.0".
- * @param buffer	The character buffer to populate
- * @param length	The maximum number of characters to set in buffer
- * @return			true if successful, false if an error occurred
- */
+///
+/// Gets the plugin version as a C string, such as "1.0".
+/// @param buffer	The character buffer to populate
+/// @param length	The maximum number of characters to set in buffer
+/// @return			true if successful, false if an error occurred
+///
 SERVO_UNITY_EXTERN bool servoUnityGetVersion(char *buffer, int length);
 
 SERVO_UNITY_EXTERN void servoUnityInitServo(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback);
@@ -177,8 +187,10 @@ SERVO_UNITY_EXTERN bool servoUnityGetWindowTextureFormat(int windowIndex, int *w
 
 SERVO_UNITY_EXTERN uint64_t servoUnityGetBufferSizeForTextureFormat(int width, int height, int format);
 
-// On Direct3D-like devices pass a pointer to the base texture type (IDirect3DBaseTexture9 on D3D9, ID3D11Resource on D3D11),
-// or on OpenGL-like devices pass the texture "name", casting the integer to a pointer.
+///
+/// On Direct3D-like devices pass a pointer to the base texture type (IDirect3DBaseTexture9 on D3D9, ID3D11Resource on D3D11),
+/// or on OpenGL-like devices pass the texture "name", casting the integer to a pointer.
+///
 SERVO_UNITY_EXTERN bool servoUnitySetWindowUnityTextureID(int windowIndex, void *nativeTexturePtr);
 
 SERVO_UNITY_EXTERN bool servoUnityRequestWindowSizeChange(int windowIndex, int width, int height);
@@ -187,10 +199,12 @@ SERVO_UNITY_EXTERN bool servoUnityCloseWindow(int windowIndex);
 
 SERVO_UNITY_EXTERN bool servoUnityCloseAllWindows(void);
 
-// Must be called from rendering thread with active rendering context.
-// As an alternative to invoking directly, an equivalent invocation can be invoked via call this sequence:
-//     servoUnitySetRenderEventFunc1Params(windowIndex, timeDelta);
-//     (*GetRenderEventFunc())(1);
+///
+/// Must be called from rendering thread with active rendering context.
+/// As an alternative to invoking directly, an equivalent invocation can be invoked via call this sequence:
+///     servoUnitySetRenderEventFunc1Params(windowIndex, timeDelta);
+///     (*GetRenderEventFunc())(1);
+///
 SERVO_UNITY_EXTERN void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta);
 
 SERVO_UNITY_EXTERN void servoUnitySetRenderEventFunc1Params(int windowIndex, float timeDelta);

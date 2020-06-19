@@ -23,7 +23,6 @@
 #endif
 #include <stdlib.h>
 #include "servo_unity_log.h"
-#include "simpleservo.h"
 
 void ServoUnityWindowGL::initDevice() {
 #ifdef _WIN32
@@ -34,6 +33,12 @@ void ServoUnityWindowGL::initDevice() {
 void ServoUnityWindowGL::finalizeDevice() {
 }
 
+// Unfortunately the simpleservo interface doesn't allow arbitrary userdata
+// to be passed along with callbacks, so we have to keep a global static
+// instance pointer so that we can correctly call back to the correct window
+// instance.
+ServoUnityWindowGL *ServoUnityWindowGL::s_servo = nullptr;
+
 ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
 	ServoUnityWindow(uid, uidExt),
 	m_size(size),
@@ -43,7 +48,12 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
 	m_pixelIntFormatGL(0),
 	m_pixelFormatGL(0),
 	m_pixelTypeGL(0),
-	m_pixelSize(0)
+	m_pixelSize(0),
+    m_windowCreatedCallback(nullptr),
+    m_windowResizedCallback(nullptr),
+    m_browserEventCallback(nullptr),
+    m_servoGLInited(false),
+    m_servoUpdatePending(false)
 {
 }
 
@@ -54,8 +64,11 @@ ServoUnityWindowGL::~ServoUnityWindowGL() {
 	}
 }
 
-bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback)
+bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
 {
+    m_windowCreatedCallback = windowCreatedCallback;
+    m_windowResizedCallback = windowResizedCallback;
+    m_browserEventCallback = browserEventCallback;
 	switch (m_format) {
 		case ServoUnityTextureFormat_RGBA32:
 			m_pixelIntFormatGL = GL_RGBA;
@@ -115,9 +128,9 @@ bool ServoUnityWindowGL::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback)
 			break;
 	}
 
-	setSize(m_size);
+    m_buf = (uint8_t *)calloc(1, m_size.w * m_size.h * m_pixelSize);
 
-	if (windowCreatedCallback) windowCreatedCallback(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
+	if (m_windowCreatedCallback) (*m_windowCreatedCallback)(m_uidExt, m_uid, m_size.w, m_size.h, m_format);
 
 	return true;
 }
@@ -130,6 +143,8 @@ void ServoUnityWindowGL::setSize(ServoUnityWindow::Size size) {
 	m_size = size;
 	if (m_buf) free(m_buf);
 	m_buf = (uint8_t *)calloc(1, m_size.w * m_size.h * m_pixelSize);
+
+    if (m_windowResizedCallback) (*m_windowResizedCallback)(m_uidExt, m_size.w, m_size.h);
 }
 
 void ServoUnityWindowGL::setNativePtr(void* texPtr) {
@@ -140,7 +155,60 @@ void* ServoUnityWindowGL::nativePtr() {
 	return (void *)((uintptr_t)m_texID); // Extension to pointer-length (usually 64 bits) is the desired behaviour.
 }
 
+void ServoUnityWindowGL::requestBrowserUpdate() {
+    m_servoUpdatePending = true;
+}
+
 void ServoUnityWindowGL::requestUpdate(float timeDelta) {
+
+    if (!m_servoGLInited) {
+        if (s_servo) {
+            SERVOUNITYLOGe("servo already inited.\n");
+            return;
+        }
+        s_servo = this;
+        CInitOptions cio {
+            .args = nullptr,
+            .url = nullptr,
+            .width = m_size.w,
+            .height = m_size.h,
+            .density = 72.0f,
+            .enable_subpixel_text_antialiasing = true,
+            .vslogger_mod_list = nullptr,
+            .vslogger_mod_size = 0,
+            .native_widget = nullptr
+        };
+        CHostCallbacks chc {
+            .on_load_started = on_load_started,
+            .on_load_ended = on_load_ended,
+            .on_title_changed = on_title_changed,
+            .on_allow_navigation = on_allow_navigation,
+            .on_url_changed = on_url_changed,
+            .on_history_changed = on_history_changed,
+            .on_animating_changed = on_animating_changed,
+            .on_shutdown_complete = on_shutdown_complete,
+            .on_ime_state_changed = on_ime_state_changed,
+            .get_clipboard_contents = get_clipboard_contents,
+            .set_clipboard_contents = set_clipboard_contents,
+            .on_media_session_metadata = on_media_session_metadata,
+            .on_media_session_playback_state_change = on_media_session_playback_state_change,
+            .on_media_session_set_position_state = on_media_session_set_position_state,
+            .prompt_alert = prompt_alert,
+            .prompt_ok_cancel = prompt_ok_cancel,
+            .prompt_yes_no = prompt_yes_no,
+            .prompt_input = prompt_input,
+            .on_devtools_started = on_devtools_started,
+            .show_context_menu = show_context_menu,
+            .on_log_output = on_log_output
+        };
+        init_with_gl(cio, wakeup, chc);
+
+        m_servoGLInited = true;
+    }
+    if (m_servoUpdatePending) {
+        perform_updates();
+        m_servoUpdatePending = false;
+    }
 
 	// Auto-generate a dummy texture. A 100 x 100 square, oscillating in x dimension.
 	static int k = 0;
@@ -229,26 +297,186 @@ void ServoUnityWindowGL::pointerExit() {
 
 void ServoUnityWindowGL::pointerOver(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerOver(%d, %d)\n", x, y);
+    if (!m_servoGLInited) return;
     mouse_move(x, y);
 }
 
 void ServoUnityWindowGL::pointerPress(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerPress(%d, %d)\n", x, y);
+    if (!m_servoGLInited) return;
     mouse_down(x, y, CMouseButton::Left);
 }
 
 void ServoUnityWindowGL::pointerRelease(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerRelease(%d, %d)\n", x, y);
+    if (!m_servoGLInited) return;
     mouse_up(x, y, CMouseButton::Left);
 }
 
 void ServoUnityWindowGL::pointerScrollDiscrete(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d)\n", x, y);
+    if (!m_servoGLInited) return;
     scroll(x, y, 0, 0);
 }
 
 void ServoUnityWindowGL::keyPress(int charCode) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::keyPress(%d)\n", charCode);
+}
+
+//
+// Callback implementations. These are static, so have to fetch the active instance
+// via the static instance pointer s_servo.
+//
+
+void ServoUnityWindowGL::on_load_started(void)
+{
+    if (!s_servo || !s_servo->m_browserEventCallback) return;
+    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 1, 0);
+}
+
+void ServoUnityWindowGL::on_load_ended(void)
+{
+    if (!s_servo || !s_servo->m_browserEventCallback) return;
+    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 0, 0);
+}
+
+void ServoUnityWindowGL::on_title_changed(const char *title)
+{
+    SERVOUNITYLOGe("on_title_changed: %s\n", title);
+}
+
+bool ServoUnityWindowGL::on_allow_navigation(const char *url)
+{
+    return true;
+}
+
+void ServoUnityWindowGL::on_url_changed(const char *url)
+{
+    SERVOUNITYLOGe("on_url_changed: %s\n", url);
+}
+
+void ServoUnityWindowGL::on_history_changed(bool can_go_back, bool can_go_forward)
+{
+    SERVOUNITYLOGe("on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
+}
+
+void ServoUnityWindowGL::on_animating_changed(bool animating)
+{
+    // TODO: change the rate of callbacks
+}
+
+void ServoUnityWindowGL::on_shutdown_complete(void)
+{
+    if (!s_servo || !s_servo->m_browserEventCallback) return;
+    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0);
+}
+
+void ServoUnityWindowGL::on_ime_state_changed(bool show)
+{
+    if (!s_servo || !s_servo->m_browserEventCallback) return;
+    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, show ? 1 : 0, 0);
+}
+
+const char *ServoUnityWindowGL::get_clipboard_contents(void)
+{
+    SERVOUNITYLOGe("get_clipboard_contents\n");
+    return nullptr;
+}
+
+void ServoUnityWindowGL::set_clipboard_contents(const char *contents)
+{
+    SERVOUNITYLOGe("set_clipboard_contents: %s\n", contents);
+}
+
+void ServoUnityWindowGL::on_media_session_metadata(const char *title, const char *album, const char *artist)
+{
+    SERVOUNITYLOGe("on_media_session_metadata: title:%s, album:%s, artist:%s\n", title, album, artist);
+}
+
+void ServoUnityWindowGL::on_media_session_playback_state_change(CMediaSessionPlaybackState state)
+{
+    const char *stateA;
+    switch (state) {
+        case CMediaSessionPlaybackState::None:
+            stateA = "None";
+            break;
+        case CMediaSessionPlaybackState::Paused:
+            stateA = "Paused";
+            break;
+        case CMediaSessionPlaybackState::Playing:
+            stateA = "Playing";
+            break;
+        default:
+            stateA = "";
+            break;
+    }
+    SERVOUNITYLOGe("on_media_session_playback_state_change: %s\n", stateA);
+}
+
+void ServoUnityWindowGL::on_media_session_set_position_state(double duration, double position, double playback_rate)
+{
+    SERVOUNITYLOGe("on_media_session_set_position_state: duration:%f, position:%f, playback_rate:%f\n", duration, position, playback_rate);
+}
+
+void ServoUnityWindowGL::prompt_alert(const char *message, bool trusted)
+{
+    SERVOUNITYLOGe("prompt_alert%s: %s\n", trusted ? " (trusted)" : "", message);
+}
+
+CPromptResult ServoUnityWindowGL::prompt_ok_cancel(const char *message, bool trusted)
+{
+    SERVOUNITYLOGe("prompt_ok_cancel%s: %s\n", trusted ? " (trusted)" : "", message);
+    return CPromptResult::Dismissed;
+}
+
+CPromptResult ServoUnityWindowGL::prompt_yes_no(const char *message, bool trusted)
+{
+    SERVOUNITYLOGe("prompt_yes_no%s: %s\n", trusted ? " (trusted)" : "", message);
+    return CPromptResult::Dismissed;
+}
+
+const char *ServoUnityWindowGL::prompt_input(const char *message, const char *def, bool trusted)
+{
+    SERVOUNITYLOGe("prompt_input%s: %s\n", trusted ? " (trusted)" : "", message);
+    return def;
+}
+
+void ServoUnityWindowGL::on_devtools_started(CDevtoolsServerState result, unsigned int port)
+{
+    const char *resultA;
+    switch (result) {
+        case CDevtoolsServerState::Error:
+            resultA = "Error";
+            break;
+        case CDevtoolsServerState::Started:
+            resultA = "Started";
+            break;
+        default:
+            resultA = "";
+            break;
+    }
+    SERVOUNITYLOGe("on_devtools_started: result:%s, port:%d\n", resultA, port);
+}
+
+void ServoUnityWindowGL::show_context_menu(const char *title, const char *const *items_list, uint32_t items_size)
+{
+    SERVOUNITYLOGe("show_context_menu: title:%s\n", title);
+    for (int i = 0; i < items_size; i++) {
+        SERVOUNITYLOGe("    item %n:%s\n", i, items_list[i]);
+    }
+    on_context_menu_closed(CContextMenuResult::Dismissed_, 0);
+}
+
+void ServoUnityWindowGL::on_log_output(const char *buffer, uint32_t buffer_length)
+{
+    SERVOUNITYLOGe("%s", buffer);
+}
+
+void ServoUnityWindowGL::wakeup(void)
+{
+    SERVOUNITYLOGe("wakeup\n");
+    if (!s_servo) return;
+    s_servo->requestBrowserUpdate();
 }
 
 #endif // SUPPORT_OPENGL_CORE

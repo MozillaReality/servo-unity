@@ -1,9 +1,11 @@
+#ifndef simpleservo_h
+#define simpleservo_h
+
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifndef _simpleservo_h_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -163,4 +165,4 @@ void touch_up(float x, float y, int32_t pointer_id);
 #ifdef __cplusplus
 }
 #endif
-#endif // !_simpleservo_h_
+#endif // !simpleservo_h

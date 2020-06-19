@@ -251,7 +251,7 @@ bool servoUnityRequestNewWindow(int uidExt, int widthPixelsRequested, int height
 		SERVOUNITYLOGe("Cannot create window. Unknown/unsupported render type detected.\n");
 	}
 	auto inserted = s_windows.emplace(window->uid(), move(window));
-	if (!inserted.second || !inserted.first->second->init(m_windowCreatedCallback)) {
+	if (!inserted.second || !inserted.first->second->init(m_windowCreatedCallback, m_windowResizedCallback, m_browserEventCallback)) {
 		SERVOUNITYLOGe("Error initing window.\n");
 		return false;
 	}
@@ -381,13 +381,7 @@ bool servoUnityRequestWindowSizeChange(int windowIndex, int width, int height)
 	
 	window_iter->second->setSize({ width, height });
 
-	if (m_windowResizedCallback) {
-		// Once window resize request has completed, get the size that actually was set, and call back to Unity
-		ServoUnityWindow::Size size = window_iter->second->size();
-		(*m_windowResizedCallback)(window_iter->second->uidExt(), size.w, size.h);
-	}
-	// TODO: Return true once above method implemented...
-	return false;
+    return true;
 }
 
 void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta)
@@ -428,3 +422,4 @@ void servoUnityWindowPointerEvent(int windowIndex, int eventID, int windowX, int
 		break;
 	}
 }
+

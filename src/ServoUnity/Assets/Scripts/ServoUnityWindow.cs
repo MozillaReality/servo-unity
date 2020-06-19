@@ -159,6 +159,7 @@ public class ServoUnityWindow : ServoUnityPointableSurface
 
     public void WasResized(int widthPixels, int heightPixels)
     {
+        if (_windowIndex == 0) return;
         Height = (Width / widthPixels) * heightPixels;
         videoSize = new Vector2Int(widthPixels, heightPixels);
         var oldTexture = _videoTexture;

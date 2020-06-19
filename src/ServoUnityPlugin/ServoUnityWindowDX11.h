@@ -1,4 +1,4 @@
-﻿//
+//
 // ServoUnityWindowDX11.h
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
@@ -29,6 +29,9 @@ private:
 	Size m_size;
 	int m_format;
 	void *m_unityTexPtr;
+    PFN_WINDOWCREATEDCALLBACK m_windowCreatedCallback;
+    PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback;
+    PFN_BROWSEREVENTCALLBACK m_browserEventCallback;
 
 public:
 	static void initDevice(IUnityInterfaces* unityInterfaces);
@@ -39,7 +42,7 @@ public:
     //ServoUnityWindowDX11(const ServoUnityWindowDX11&) = delete;
 	//void operator=(const ServoUnityWindowDX11&) = delete;
 
-	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback) override;
+	bool init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback) override;
     RendererAPI rendererAPI() override {return RendererAPI::DirectX11;}
 	Size size() override;
 	void setSize(Size size) override;
