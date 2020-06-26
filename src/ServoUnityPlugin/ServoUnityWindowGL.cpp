@@ -167,12 +167,41 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
             return;
         }
         s_servo = this;
+        // Note about logs:
+        // By default: all modules are enabled. Only warn level-logs are displayed.
+        // To change the log level, add e.g. "--vslogger-level debug" to .args.
+        // To only print logs from specific modules, add their names to pfilters.
+        // For example:
+        // static char *pfilters[] = {
+        //   "servo",
+        //   "simpleservo",
+        //   "script::dom::bindings::error", // Show JS errors by default.
+        //   "canvas::webgl_thread", // Show GL errors by default.
+        //   "compositing",
+        //   "constellation",
+        // };
+        // .vslogger_mod_list = pfilters;
+        // .vslogger_mod_size = sizeof(pfilters) / sizeof(pfilters[0]);
+        char *args = nullptr;
+        const char *arg_ll = nullptr;
+        const char *arg_ll_debug = "debug";
+        const char *arg_ll_info = "info";
+        const char *arg_ll_warn = "warn";
+        const char *arg_ll_error = "error";
+        switch (servoUnityLogLevel) {
+            case SERVO_UNITY_LOG_LEVEL_DEBUG: arg_ll = arg_ll_debug; break;
+            case SERVO_UNITY_LOG_LEVEL_INFO: arg_ll = arg_ll_info; break;
+            case SERVO_UNITY_LOG_LEVEL_WARN: arg_ll = arg_ll_warn; break;
+            case SERVO_UNITY_LOG_LEVEL_ERROR: arg_ll = arg_ll_error; break;
+            default: break;
+        }
+        if (arg_ll) asprintf(&args, "--vslogger-level %s", arg_ll);
+
         CInitOptions cio {
-            .args = nullptr,
-            .url = nullptr,
+            .args = args,
             .width = m_size.w,
             .height = m_size.h,
-            .density = 72.0f,
+            .density = 1.0f,
             .enable_subpixel_text_antialiasing = true,
             .vslogger_mod_list = nullptr,
             .vslogger_mod_size = 0,
@@ -202,6 +231,7 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
             .on_log_output = on_log_output
         };
         init_with_gl(cio, wakeup, chc);
+        free(args);
 
         m_servoGLInited = true;
     }

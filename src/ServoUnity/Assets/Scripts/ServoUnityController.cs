@@ -119,6 +119,7 @@ public class ServoUnityController : MonoBehaviour
             case RuntimePlatform.Android: // Unity Player on Android.
             case RuntimePlatform.IPhonePlayer: // Unity Player on iOS.
                 servo_unity_plugin.ServoUnityRegisterLogCallback(Log);
+                servo_unity_plugin.ServoUnitySetLogLevel((int)currentLogLevel);
                 break;
             default:
                 break;

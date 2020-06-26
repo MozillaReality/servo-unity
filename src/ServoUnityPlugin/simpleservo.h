@@ -46,17 +46,36 @@ typedef enum {
 } CMouseButton;
 
 typedef enum {
+  Float,
+  Int,
+  Str,
+  Bool,
+  Missing,
+} CPrefType;
+
+typedef enum {
   Dismissed,
   Primary,
   Secondary,
 } CPromptResult;
+
+typedef struct {
+  CPrefType pref_type;
+  const char *key;
+  const void *value;
+  bool is_default;
+} CPref;
+
+typedef struct {
+  uintptr_t len;
+  const CPref *list;
+} CPrefList;
 
 /**
  * Servo options
  */
 typedef struct {
   const char *args;
-  const char *url;
   int32_t width;
   int32_t height;
   float density;
@@ -64,6 +83,7 @@ typedef struct {
   const char *const *vslogger_mod_list;
   uint32_t vslogger_mod_size;
   void *native_widget;
+  const CPrefList *prefs;
 } CInitOptions;
 
 /**
@@ -98,6 +118,18 @@ void change_visibility(bool visible);
 void click(float x, float y);
 
 void deinit(void);
+
+CPref get_pref(const char *key);
+
+const bool *get_pref_as_bool(const void *ptr);
+
+const double *get_pref_as_float(const void *ptr);
+
+const int64_t *get_pref_as_int(const void *ptr);
+
+const char *get_pref_as_str(const void *ptr);
+
+CPrefList get_prefs(void);
 
 void go_back(void);
 
@@ -137,6 +169,10 @@ void reload(void);
 
 void request_shutdown(void);
 
+void reset_all_prefs(void);
+
+bool reset_pref(const char *key);
+
 void resize(int32_t width, int32_t height);
 
 void scroll(int32_t dx, int32_t dy, int32_t x, int32_t y);
@@ -151,6 +187,14 @@ void scroll_start(int32_t dx, int32_t dy, int32_t x, int32_t y);
 const char *servo_version(void);
 
 void set_batch_mode(bool batch);
+
+bool set_bool_pref(const char *key, bool value);
+
+bool set_float_pref(const char *key, double value);
+
+bool set_int_pref(const char *key, int64_t value);
+
+bool set_str_pref(const char *key, const char *value);
 
 void stop(void);
 
