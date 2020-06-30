@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A49CC1524690FC400B77CCA /* OpenGL.framework */; };
-		4A64971A24A2E2AC006447CA /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */; };
 		4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8102464FBE000E47295 /* ServoUnityWindowDX11.cpp */; };
 		4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8112464FBE000E47295 /* servo_unity_log.c */; };
 		4A92A8192464FBE000E47295 /* ServoUnityWindowGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */; };
 		4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8142464FBE000E47295 /* servo_unity.cpp */; };
+		4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,7 +39,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A49CC1624690FC400B77CCA /* OpenGL.framework in Frameworks */,
-				4A64971A24A2E2AC006447CA /* libsimpleservo2.dylib in Frameworks */,
+				4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

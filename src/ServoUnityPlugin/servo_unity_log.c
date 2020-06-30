@@ -171,7 +171,7 @@ void servoUnityLogv(const char *tag, const int logLevel, const char *format, va_
 		//#elif defined(_WINRT)
 		//            OutputDebugStringA(buf);
 #elif defined(__APPLE__)
-		if (os_log_create == NULL) { // os_log only available macOS 10.12 / iOS 10.0 and later.
+        if (&os_log_create == NULL) { // os_log only available macOS 10.12 / iOS 10.0 and later.
 			fprintf(stderr, "%s", buf);
 		}
 		else {
@@ -190,4 +190,19 @@ void servoUnityLogv(const char *tag, const int logLevel, const char *format, va_
 #endif
 	}
 	free(buf);
+}
+
+void servoUnityLogFlush(void)
+{
+    if (!servoUnityLogLoggerCallback
+        || !servoUnityLogLoggerCallBackOnlyIfOnSameThread
+        || servoUnityLogWrongThreadBufferCount <= 0) return;
+#ifndef _WIN32
+    if (!pthread_equal(pthread_self(), servoUnityLogLoggerThread)) return;
+#else
+    if (GetCurrentThreadId() != servoUnityLogLoggerThreadID) return;
+#endif
+
+    (*servoUnityLogLoggerCallback)(servoUnityLogWrongThreadBuffer);
+    servoUnityLogWrongThreadBufferCount = 0;
 }

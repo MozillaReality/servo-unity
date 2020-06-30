@@ -104,6 +104,15 @@ SERVO_UNITY_EXTERN void servoUnityLogSetLogger(SERVO_UNITY_LOG_LOGGER_CALLBACK c
 #define SERVOUNITYLOGe(...) servoUnityLog(NULL, SERVO_UNITY_LOG_LEVEL_ERROR, __VA_ARGS__)
 #define SERVOUNITYLOGperror(s) servoUnityLog(NULL, SERVO_UNITY_LOG_LEVEL_ERROR, ((s != NULL) ? "%s: %s\n" : "%s%s\n"), ((s != NULL) ? s : ""), strerror(errno))
 
+/*!
+    @brief Flush any log logged on non-callback thread.
+    @details In the case where a log callback was installed with parameter
+        callBackOnlyIfOnSameThread set to true, this call will flush any log output
+        that occured on a non-callback thread, provided that this function is
+        invoked on a callback-OK thread.
+ */
+SERVO_UNITY_EXTERN void servoUnityLogFlush(void);
+
 #ifdef __cplusplus
 }
 #endif

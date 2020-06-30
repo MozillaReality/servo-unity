@@ -160,6 +160,8 @@ SERVO_UNITY_EXTERN void servoUnityRegisterLogCallback(PFN_LOGCALLBACK logCcallba
 
 SERVO_UNITY_EXTERN void servoUnitySetLogLevel(const int logLevel);
 
+SERVO_UNITY_EXTERN void servoUnityFlushLog(void);
+
 ///
 /// Gets the plugin version as a C string, such as "1.0".
 /// @param buffer	The character buffer to populate

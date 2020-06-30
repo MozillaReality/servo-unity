@@ -210,6 +210,7 @@ public class ServoUnityController : MonoBehaviour
 
     void Update()
     {
+        servo_unity_plugin.ServoUnityFlushLog();
     }
 
     [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginWindowResizedCallback))]

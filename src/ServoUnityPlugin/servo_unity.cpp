@@ -70,6 +70,9 @@ extern "C" void	UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload()
 
 static UnityGfxRenderer s_RendererType = kUnityGfxRendererNull;
 
+// Note that Unity uses multiple OpenGL contexts, and the one active when
+// this event fires may not be the same one active during UnityRenderingEvent events,
+// so don't do any context-specific initialisation here (i.e. no textures, VAOs etc.)
 static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType eventType)
 {
 	switch (eventType) {
@@ -140,7 +143,7 @@ static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
 	case kUnityGfxRendererD3D11:
 		break;
 	case kUnityGfxRendererOpenGLCore:
-		break;
+		break; 
 	default:
 		SERVOUNITYLOGe("Unsupported renderer.\n");
 		return;
@@ -176,6 +179,11 @@ void servoUnitySetLogLevel(const int logLevel)
 	if (logLevel >= 0) {
 		servoUnityLogLevel = logLevel;
 	}
+}
+
+void servoUnityFlushLog(void)
+{
+    servoUnityLogFlush();
 }
 
 bool servoUnityGetVersion(char *buffer, int length)

@@ -64,6 +64,11 @@ public class ServoUnityPlugin
         ServoUnityPlugin_pinvoke.servoUnitySetLogLevel(logLevel);
     }
 
+    public void ServoUnityFlushLog()
+    {
+        ServoUnityPlugin_pinvoke.servoUnityFlushLog();
+    }
+
     public string ServoUnityGetVersion()
     {
         StringBuilder sb = new StringBuilder(128);

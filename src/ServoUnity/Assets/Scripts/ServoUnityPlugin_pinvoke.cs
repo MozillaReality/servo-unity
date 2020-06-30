@@ -36,6 +36,9 @@ public static class ServoUnityPlugin_pinvoke
     public static extern void servoUnitySetLogLevel(int logLevel);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnityFlushLog();
+
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAsAttribute(UnmanagedType.I1)]
     public static extern bool servoUnityGetVersion([MarshalAs(UnmanagedType.LPStr)]StringBuilder buffer, int length);
 
