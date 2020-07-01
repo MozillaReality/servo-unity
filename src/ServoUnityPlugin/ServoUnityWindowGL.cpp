@@ -52,8 +52,7 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
     m_windowCreatedCallback(nullptr),
     m_windowResizedCallback(nullptr),
     m_browserEventCallback(nullptr),
-    m_servoGLInited(false),
-    m_servoUpdatePending(false)
+    m_servoGLInited(false)
 {
 }
 
@@ -155,12 +154,9 @@ void* ServoUnityWindowGL::nativePtr() {
 	return (void *)((uintptr_t)m_texID); // Extension to pointer-length (usually 64 bits) is the desired behaviour.
 }
 
-void ServoUnityWindowGL::requestBrowserUpdate() {
-    m_servoUpdatePending = true;
-}
-
 void ServoUnityWindowGL::requestUpdate(float timeDelta) {
-    SERVOUNITYLOGi("ServoUnityWindowGL::requestUpdate(%f)\n", timeDelta);
+    SERVOUNITYLOGd("ServoUnityWindowGL::requestUpdate(%f)\n", timeDelta);
+
     if (!m_servoGLInited) {
         if (s_servo) {
             SERVOUNITYLOGe("servo already inited.\n");
@@ -236,12 +232,23 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
 
         m_servoGLInited = true;
     }
-    if (m_servoUpdatePending) {
-        perform_updates();
-        m_servoUpdatePending = false;
-    }
 
-	// Auto-generate a dummy texture. A 100 x 100 square, oscillating in x dimension.
+    // Service task queue.
+    while (true) {
+        std::function<void()> task;
+        {
+            std::lock_guard<std::mutex> lock(m_tasksLock);
+            if (m_tasks.empty()) {
+                break;
+            } else {
+                task = m_tasks.front();
+                m_tasks.pop_front();
+            }
+        }
+        task();
+    };
+
+    // Auto-generate a dummy texture. A 100 x 100 square, oscillating in x dimension.
 	static int k = 0;
 	int i, j;
 	k++;
@@ -318,6 +325,11 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
 	//glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, m_size.w, m_size.h, GL_RGBA, GL_UNSIGNED_BYTE, m_buf);
 }
 
+void ServoUnityWindowGL::runOnServoThread(std::function<void()> task) {
+    std::lock_guard<std::mutex> lock(m_tasksLock);
+    m_tasks.push_back(task);
+}
+
 void ServoUnityWindowGL::pointerEnter() {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerEnter()\n");
 }
@@ -329,25 +341,26 @@ void ServoUnityWindowGL::pointerExit() {
 void ServoUnityWindowGL::pointerOver(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerOver(%d, %d)\n", x, y);
     if (!m_servoGLInited) return;
-    mouse_move(x, y);
+
+    runOnServoThread([=] {mouse_move(x, y);});
 }
 
 void ServoUnityWindowGL::pointerPress(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerPress(%d, %d)\n", x, y);
     if (!m_servoGLInited) return;
-    mouse_down(x, y, CMouseButton::Left);
+    runOnServoThread([=] {mouse_down(x, y, CMouseButton::Left);});
 }
 
 void ServoUnityWindowGL::pointerRelease(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerRelease(%d, %d)\n", x, y);
     if (!m_servoGLInited) return;
-    mouse_up(x, y, CMouseButton::Left);
+    runOnServoThread([=] {mouse_up(x, y, CMouseButton::Left);});
 }
 
 void ServoUnityWindowGL::pointerScrollDiscrete(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d)\n", x, y);
     if (!m_servoGLInited) return;
-    scroll(x, y, 0, 0);
+    runOnServoThread([=] {scroll(x, y, 0, 0);});
 }
 
 void ServoUnityWindowGL::keyPress(int charCode) {
@@ -391,7 +404,7 @@ void ServoUnityWindowGL::on_url_changed(const char *url)
 
 void ServoUnityWindowGL::on_history_changed(bool can_go_back, bool can_go_forward)
 {
-    SERVOUNITYLOGi("ervo callback on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
+    SERVOUNITYLOGi("servo callback on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
 }
 
 void ServoUnityWindowGL::on_animating_changed(bool animating)
@@ -513,7 +526,7 @@ void ServoUnityWindowGL::wakeup(void)
 {
     SERVOUNITYLOGi("servo callback wakeup\n");
     if (!s_servo) return;
-    s_servo->requestBrowserUpdate();
+    s_servo->runOnServoThread([]{perform_updates();});
 }
 
 #endif // SUPPORT_OPENGL_CORE

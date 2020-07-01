@@ -15,6 +15,9 @@
 #ifdef SUPPORT_OPENGL_CORE
 #include <cstdint>
 #include <string>
+#include <deque>
+#include <functional>
+#include <mutex>
 #include "simpleservo.h"
 
 class ServoUnityWindowGL : public ServoUnityWindow
@@ -32,7 +35,8 @@ private:
     PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback;
     PFN_BROWSEREVENTCALLBACK m_browserEventCallback;
     bool m_servoGLInited;
-    bool m_servoUpdatePending;
+    std::deque< std::function<void()> > m_tasks;
+    std::mutex m_tasksLock;
 
     static void on_load_started(void);
     static void on_load_ended(void);
@@ -56,6 +60,8 @@ private:
     static void show_context_menu(const char *title, const char *const *items_list, uint32_t items_size);
     static void on_log_output(const char *buffer, uint32_t buffer_length);
     static void wakeup(void);
+
+    void runOnServoThread(std::function<void()> task);
 
 public:
 	static void initDevice();
