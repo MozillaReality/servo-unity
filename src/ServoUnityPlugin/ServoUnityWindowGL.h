@@ -77,11 +77,10 @@ public:
 	void setNativePtr(void* texPtr) override;
 	void* nativePtr() override;
 
-    // Also update the browser the next time requestUpdate() runs.
-    void requestBrowserUpdate();
-
-	// Must be called from render thread.
+	/// Request an update to the window texture. Must be called from render thread.
 	void requestUpdate(float timeDelta) override;
+    /// Notify that the renderer is going away and should be cleaned up. Must be called from render thread.
+    void cleanupRenderer(void) override;
 
 	int format() override { return m_format; }
 

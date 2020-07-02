@@ -90,6 +90,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4A92A80B2464FB8400E47295 /* Build configuration list for PBXNativeTarget "servo_unity" */;
 			buildPhases = (
+				4A0ACE1824AD83E8005CE298 /* ShellScript */,
 				4A92A8012464FB8400E47295 /* Sources */,
 				4A92A8022464FB8400E47295 /* Frameworks */,
 				4A92A8032464FB8400E47295 /* Resources */,
@@ -144,6 +145,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4A0ACE1824AD83E8005CE298 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -x\nrm -rf \"$DSTROOT/$INSTALL_PATH/$FULL_PRODUCT_NAME\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4A92A8012464FB8400E47295 /* Sources */ = {

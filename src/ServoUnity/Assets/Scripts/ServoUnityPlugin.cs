@@ -185,6 +185,7 @@ public class ServoUnityPlugin
         //ServoUnityPlugin_pinvoke.servoUnityRequestWindowUpdate(windowIndex, timeDelta);
         ServoUnityPlugin_pinvoke.servoUnitySetRenderEventFunc1Params(windowIndex, timeDelta);
         GL.IssuePluginEvent(ServoUnityPlugin_pinvoke.GetRenderEventFunc(), 1);
+        GL.InvalidateState();
     }
 
     public enum ServoUnityPointerEventID

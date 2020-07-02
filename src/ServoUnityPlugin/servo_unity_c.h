@@ -209,7 +209,18 @@ SERVO_UNITY_EXTERN bool servoUnityCloseAllWindows(void);
 ///
 SERVO_UNITY_EXTERN void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta);
 
+///
+/// Must be called from rendering thread with active rendering context.
+/// As an alternative to invoking directly, an equivalent invocation can be invoked via call this sequence:
+///     servoUnitySetRenderEventFunc2Param(windowIndex);
+///     (*GetRenderEventFunc())(2);
+///
+SERVO_UNITY_EXTERN void servoUnityCleanupRenderer(int windowIndex);
+
 SERVO_UNITY_EXTERN void servoUnitySetRenderEventFunc1Params(int windowIndex, float timeDelta);
+
+SERVO_UNITY_EXTERN void servoUnitySetRenderEventFunc2Param(int windowIndex);
+
 
 enum {
 	ServoUnityPointerEventID_Enter = 0,

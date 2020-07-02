@@ -127,13 +127,18 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
 	};
 }
 
-static int s_RenderEventFunc1Param_windowIndex = 0;
+static int s_RenderEventFunc12Param_windowIndex = 0;
 static float s_RenderEventFunc1Param_timeDelta = 0.0f;
 
 void servoUnitySetRenderEventFunc1Params(int windowIndex, float timeDelta)
 {
-	s_RenderEventFunc1Param_windowIndex = windowIndex;
+	s_RenderEventFunc12Param_windowIndex = windowIndex;
 	s_RenderEventFunc1Param_timeDelta = timeDelta;
+}
+
+void servoUnitySetRenderEventFunc2Param(int windowIndex)
+{
+    s_RenderEventFunc12Param_windowIndex = windowIndex;
 }
 
 static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
@@ -151,8 +156,11 @@ static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
 
 	switch (eventID) {
 	case 1:
-		servoUnityRequestWindowUpdate(s_RenderEventFunc1Param_windowIndex, s_RenderEventFunc1Param_timeDelta);
+		servoUnityRequestWindowUpdate(s_RenderEventFunc12Param_windowIndex, s_RenderEventFunc1Param_timeDelta);
 		break;
+    case 2:
+        servoUnityCleanupRenderer(s_RenderEventFunc12Param_windowIndex);
+        break;
 	default:
 		break;
 	}
@@ -400,6 +408,16 @@ void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta)
 		return;
 	}
 	window_iter->second->requestUpdate(timeDelta);
+}
+
+void servoUnityCleanupRenderer(int windowIndex)
+{
+    auto window_iter = s_windows.find(windowIndex);
+    if (window_iter == s_windows.end()) {
+        SERVOUNITYLOGe("Requested update for non-existent window with index %d.\n", windowIndex);
+        return;
+    }
+    window_iter->second->cleanupRenderer();
 }
 
 void servoUnityWindowPointerEvent(int windowIndex, int eventID, int windowX, int windowY)

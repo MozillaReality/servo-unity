@@ -15,6 +15,7 @@
 
 #ifdef __APPLE__
 #  include <OpenGL/gl3.h>
+#  include <OpenGL/CGLCurrent.h>
 #elif defined(_WIN32)
 #  include <gl3w/gl3w.h>
 #else 
@@ -157,6 +158,14 @@ void* ServoUnityWindowGL::nativePtr() {
 void ServoUnityWindowGL::requestUpdate(float timeDelta) {
     SERVOUNITYLOGd("ServoUnityWindowGL::requestUpdate(%f)\n", timeDelta);
 
+    // Wrap Servo calls with save/restore of Unity GL context.
+#ifdef __APPLE__
+    CGLContextObj glContextUnity = CGLGetCurrentContext();
+#elif defined(_WIN32)
+    HGLRC glContextUnity = wglGetCurrentContext();
+    HDC glCurrentDeviceUnity = wglGetCurrentDC();
+#endif
+
     if (!m_servoGLInited) {
         if (s_servo) {
             SERVOUNITYLOGe("servo already inited.\n");
@@ -248,6 +257,12 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
         task();
     };
 
+#ifdef __APPLE__
+    CGLSetCurrentContext(glContextUnity);
+#elif defined(_WIN32)
+    wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
+#endif
+
     // Auto-generate a dummy texture. A 100 x 100 square, oscillating in x dimension.
 	static int k = 0;
 	int i, j;
@@ -325,6 +340,14 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
 	//glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, m_size.w, m_size.h, GL_RGBA, GL_UNSIGNED_BYTE, m_buf);
 }
 
+void ServoUnityWindowGL::cleanupRenderer(void) {
+    if (!m_servoGLInited) return;
+    std::lock_guard<std::mutex> lock(m_tasksLock);
+    m_tasks.clear();
+    deinit();
+    s_servo = nullptr;
+    m_servoGLInited = false;
+}
 void ServoUnityWindowGL::runOnServoThread(std::function<void()> task) {
     std::lock_guard<std::mutex> lock(m_tasksLock);
     m_tasks.push_back(task);

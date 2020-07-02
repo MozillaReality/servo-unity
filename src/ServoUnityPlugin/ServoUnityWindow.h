@@ -52,6 +52,7 @@ public:
 	virtual void setNativePtr(void* texPtr) = 0;
 	virtual void* nativePtr() = 0;
 	virtual void requestUpdate(float timeDelta) = 0;
+    virtual void cleanupRenderer() = 0;
 	
 	virtual void CloseServoWindow() = 0;
 	virtual void pointerEnter() = 0;
