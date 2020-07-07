@@ -119,6 +119,8 @@ void click(float x, float y);
 
 void deinit(void);
 
+void fill_gl_texture(uint32_t tex_id, int32_t tex_width, int32_t tex_height);
+
 CPref get_pref(const char *key);
 
 const bool *get_pref_as_bool(const void *ptr);

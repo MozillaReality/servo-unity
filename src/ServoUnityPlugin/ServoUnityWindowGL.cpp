@@ -263,6 +263,7 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
     wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
 #endif
 
+#if 0
     // Auto-generate a dummy texture. A 100 x 100 square, oscillating in x dimension.
 	static int k = 0;
 	int i, j;
@@ -338,6 +339,15 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
 	glActiveTexture(GL_TEXTURE0);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_size.w, m_size.h, GL_RGBA, GL_UNSIGNED_BYTE, m_buf);
 	//glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, m_size.w, m_size.h, GL_RGBA, GL_UNSIGNED_BYTE, m_buf);
+#else
+    fill_gl_texture(m_texID, m_size.w, m_size.h);
+
+#  ifdef __APPLE__
+    CGLSetCurrentContext(glContextUnity);
+#  elif defined(_WIN32)
+    wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
+#  endif
+#endif
 }
 
 void ServoUnityWindowGL::cleanupRenderer(void) {
