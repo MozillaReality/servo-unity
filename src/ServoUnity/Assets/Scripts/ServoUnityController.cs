@@ -80,6 +80,7 @@ public class ServoUnityController : MonoBehaviour
     [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginLogCallback))]
     public static void Log(System.String msg)
     {
+        if (msg.EndsWith(Environment.NewLine)) msg = msg.Substring(0, msg.Length - Environment.NewLine.Length); // Trim any final newline.
         if (msg.StartsWith("[error]", StringComparison.Ordinal)) Debug.LogError(msg);
         else if (msg.StartsWith("[warning]", StringComparison.Ordinal)) Debug.LogWarning(msg);
         else Debug.Log(msg); // includes [info] and [debug].

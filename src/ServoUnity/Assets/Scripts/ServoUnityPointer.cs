@@ -24,7 +24,8 @@ public class ServoUnityPointer : MonoBehaviour
     public Texture2D reticleTexture;
     public float reticleRadius = 0.01f;
     public float maximumPointerDistance = 100.0f;
-
+    public float discreteScrollStepSize = 10.0f;
+ 
     private GameObject reticle;
 
     // Subscribe to this event to know when the user pulled the trigger when not pointing at anything
@@ -47,6 +48,9 @@ public class ServoUnityPointer : MonoBehaviour
     // State that will be set during an Update() in this class.
     protected float rayLength;
     protected Transform previousContact = null;
+
+    private static Vector2 resetCoord = new Vector2(-1.0f, -1.0f);
+    protected Vector2 previousCoord = resetCoord;
     protected Transform previousContactButtonDown = null;
 
     protected virtual void Awake()
@@ -208,6 +212,7 @@ public class ServoUnityPointer : MonoBehaviour
         {
             reticle.SetActive(false);
             previousContact = null;
+            previousCoord = resetCoord;
 
             if (buttonUp) OnPointerAirClick?.Invoke();
         }
@@ -230,6 +235,7 @@ public class ServoUnityPointer : MonoBehaviour
                 OnPointerIn(argsIn);
                 
                 previousContact = hit.transform;
+                previousCoord = resetCoord;
             }
 
             if (buttonDown)
@@ -250,14 +256,22 @@ public class ServoUnityPointer : MonoBehaviour
                 PointerEventArgs argsClick = new PointerEventArgs();
                 argsClick.flags = 0;
                 argsClick.target = previousContact;
-                if (previousContactButtonDown == previousContact) OnPointerClick(argsClick);
+                if (previousContactButtonDown == previousContact)
+                {
+                    OnPointerClick(argsClick);
+                }
                 OnPointerUp(argsClick);
             }
 
-            sups?.PointerOver(hit.textureCoord);
+            if (hit.textureCoord != previousCoord)
+            {
+                sups?.PointerOver(hit.textureCoord);
+                previousCoord = hit.textureCoord;
+            }
+
             if (scrollDelta != Vector2.zero)
             {
-                 sups?.PointerScrollDiscrete(scrollDelta);
+                sups?.PointerScrollDiscrete(scrollDelta * discreteScrollStepSize);
             }
         } // bHit
     }
