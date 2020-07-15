@@ -58,9 +58,10 @@ public:
 	virtual void pointerEnter() = 0;
 	virtual void pointerExit() = 0;
 	virtual void pointerOver(int x, int y) = 0;
-	virtual void pointerPress(int x, int y) = 0;
-	virtual void pointerRelease(int x, int y) = 0;
-	virtual void pointerScrollDiscrete(int x, int y) = 0; // x and y are a discrete scroll count, e.g. count of mousewheel "clicks".
+	virtual void pointerPress(int button, int x, int y) = 0;
+	virtual void pointerRelease(int button, int x, int y) = 0;
+	virtual void pointerClick(int button, int x, int y) = 0;
+    virtual void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) = 0; // x and y are a discrete scroll count, e.g. count of mousewheel "clicks".
 	virtual void keyPress(int charCode) = 0;
 };
 

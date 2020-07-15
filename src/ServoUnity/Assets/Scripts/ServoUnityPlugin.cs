@@ -195,12 +195,20 @@ public class ServoUnityPlugin
         Over = 2,
         Press = 3,
         Release = 4,
-        ScrollDiscrete = 5
+        Click = 5,
+        ScrollDiscrete = 6
     };
 
-    public void ServoUnityWindowPointerEvent(int windowIndex, ServoUnityPointerEventID eventID, int windowX, int windowY)
+    public enum ServoUnityPointerEventMouseButtonID
     {
-        ServoUnityPlugin_pinvoke.servoUnityWindowPointerEvent(windowIndex, (int) eventID, windowX, windowY);
+        Left = 0,
+        Right = 1,
+        Middle = 2
+    };
+
+    public void ServoUnityWindowPointerEvent(int windowIndex, ServoUnityPointerEventID eventID, int eventParam0, int eventParam1, int windowX, int windowY)
+    {
+        ServoUnityPlugin_pinvoke.servoUnityWindowPointerEvent(windowIndex, (int) eventID, eventParam0, eventParam1, windowX, windowY);
     }
 
     public enum ServoUnityBrowserEventType

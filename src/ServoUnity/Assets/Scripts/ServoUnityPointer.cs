@@ -9,11 +9,19 @@
 // Author(s): Philip Lamb, Patrick O'Shaughnessey
 //
 
-// To use, when an external device has a valid pointer, it should set the
-// 'transform' property of the game object to which this script is attached,
-// and then call SetActive(true) on the game object. If the pointer becomes
-// invalid, it should call SetActive(false) on the game object.
-// It should also set the value of SelectButtonDown.
+// Usage: external devices are represented by subclasses of this class.
+// When an external device has a valid pointer, it should set the
+// ray property of this script and should also set the values of buttonDown,
+// buttonUp, and button 0, 1 and 2, and any scroll delta.
+//
+// This script supports three different event mechanisms for pointer actions:
+// (1) It delivers messages to pointed-to objects with a
+//     ServoUnityPointableSurface component.
+// (2) It propagates events of type PointerEventHandler to delegates PointerIn,
+//     PointerOut, and PointerClick.
+// (3) It supports the Unity UI event system events IPointerEnterHandler,
+//     IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, and
+//     IPointerClickHandler.
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,9 +48,9 @@ public class ServoUnityPointer : MonoBehaviour
     
     // State that must be set by derived classes before calling Update() in this class.
     protected Ray ray;
-    protected bool buttonDown = false;
-    protected bool buttonUp = false;
-    protected bool button = false;
+    protected bool[] buttonDown = { false, false, false };
+    protected bool[] buttonUp = { false, false, false };
+    protected bool[] button = { false, false, false };
     protected Vector2 scrollDelta;
 
     // State that will be set during an Update() in this class.
@@ -51,7 +59,7 @@ public class ServoUnityPointer : MonoBehaviour
 
     private static Vector2 resetCoord = new Vector2(-1.0f, -1.0f);
     protected Vector2 previousCoord = resetCoord;
-    protected Transform previousContactButtonDown = null;
+    protected Transform[] previousContactButtonDown = { null, null, null };
 
     protected virtual void Awake()
     {
@@ -106,6 +114,9 @@ public class ServoUnityPointer : MonoBehaviour
     {
         // Send a pointer exit event if required.
         if (previousContact) {
+            ServoUnityPointableSurface sups = previousContact.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityPointableSurface;
+            sups?.PointerExit();
+
             PointerEventArgs args = new PointerEventArgs();
             args.flags = 0;
             args.target = previousContact;
@@ -172,10 +183,6 @@ public class ServoUnityPointer : MonoBehaviour
 
     protected virtual void OnPointerOut(PointerEventArgs e)
     {
-        // Special handling for ServoUnityPointableSurface.
-        ServoUnityPointableSurface s = e.target.gameObject.GetComponentInParent(typeof(ServoUnityPointableSurface)) as ServoUnityWindow;
-        s?.PointerExit();
-    
         IPointerExitHandler[] pointerExitHandlers = e.target.GetComponents<IPointerExitHandler>();
         foreach (var pointerExitHandler in pointerExitHandlers)
         {
@@ -214,7 +221,7 @@ public class ServoUnityPointer : MonoBehaviour
             previousContact = null;
             previousCoord = resetCoord;
 
-            if (buttonUp) OnPointerAirClick?.Invoke();
+            if (buttonUp[0]) OnPointerAirClick?.Invoke();
         }
         else
         {
@@ -238,29 +245,59 @@ public class ServoUnityPointer : MonoBehaviour
                 previousCoord = resetCoord;
             }
 
-            if (buttonDown)
+            if (buttonDown[0])
             {
-                sups?.PointerPress(hit.textureCoord);
+                sups?.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
+                previousContactButtonDown[0] = previousContact;
 
-                previousContactButtonDown = previousContact;
                 PointerEventArgs argsClick = new PointerEventArgs();
                 argsClick.flags = 0;
                 argsClick.target = previousContact;
                 OnPointerDown(argsClick);
             }
-
-            if (buttonUp)
+            if (buttonDown[1])
             {
-                sups?.PointerRelease(hit.textureCoord);
+                sups?.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
+                previousContactButtonDown[1] = previousContact;
+            }
+            if (buttonDown[2])
+            {
+                sups?.PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
+                previousContactButtonDown[2] = previousContact;
+            }
+
+            if (buttonUp[0])
+            {
+                sups?.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
+                if (previousContactButtonDown[0] == previousContact)
+                {
+                    sups?.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Left, hit.textureCoord);
+                }
 
                 PointerEventArgs argsClick = new PointerEventArgs();
                 argsClick.flags = 0;
                 argsClick.target = previousContact;
-                if (previousContactButtonDown == previousContact)
+                if (previousContactButtonDown[0] == previousContact)
                 {
                     OnPointerClick(argsClick);
                 }
                 OnPointerUp(argsClick);
+            }
+            if (buttonUp[1])
+            {
+                sups?.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
+                if (previousContactButtonDown[1] == previousContact)
+                {
+                    sups?.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Right, hit.textureCoord);
+                }
+            }
+            if (buttonUp[2])
+            {
+                sups?.PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
+                if (previousContactButtonDown[2] == previousContact)
+                {
+                    sups?.PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID.Middle, hit.textureCoord);
+                }
             }
 
             if (hit.textureCoord != previousCoord)
@@ -271,7 +308,7 @@ public class ServoUnityPointer : MonoBehaviour
 
             if (scrollDelta != Vector2.zero)
             {
-                sups?.PointerScrollDiscrete(scrollDelta * discreteScrollStepSize);
+                sups?.PointerScrollDiscrete(scrollDelta * discreteScrollStepSize, hit.textureCoord);
             }
         } // bHit
     }

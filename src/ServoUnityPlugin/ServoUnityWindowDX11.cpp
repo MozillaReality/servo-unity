@@ -163,16 +163,20 @@ void ServoUnityWindowDX11::pointerOver(int x, int y) {
 	SERVOUNITYLOGi("ServoUnityWindowDX11::pointerOver(%d, %d)\n", x, y);
 }
 
-void ServoUnityWindowDX11::pointerPress(int x, int y) {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerPress(%d, %d)\n", x, y);
+void ServoUnityWindowDX11::pointerPress(int button, int x, int y) {
+	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerPress(%d, %d, %d)\n", button, x, y);
 }
 
-void ServoUnityWindowDX11::pointerRelease(int x, int y) {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerRelease(%d, %d)\n", x, y);
+void ServoUnityWindowDX11::pointerRelease(int button, int x, int y) {
+	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerRelease(%d, %d, %d)\n", button, x, y);
 }
 
-void ServoUnityWindowDX11::pointerScrollDiscrete(int x, int y) {
-	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerScrollDiscrete(%d, %d)\n", x, y);
+void ServoUnityWindowDX11::pointerClick(int button, int x, int y) {
+    SERVOUNITYLOGd("ServoUnityWindowDX11::pointerClick(%d, %d, %d)\n", button, x, y);
+}
+
+void ServoUnityWindowDX11::pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) {
+	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerScrollDiscrete(%d, %d, %d, %d)\n", x_scroll, y_scroll, x, y);
 }
 
 void ServoUnityWindowDX11::keyPress(int charCode) {

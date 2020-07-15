@@ -228,10 +228,18 @@ enum {
 	ServoUnityPointerEventID_Over = 2,
 	ServoUnityPointerEventID_Press = 3,
 	ServoUnityPointerEventID_Release = 4,
-	ServoUnityPointerEventID_ScrollDiscrete = 5
+    ServoUnityPointerEventID_Click = 5,
+	ServoUnityPointerEventID_ScrollDiscrete = 6
 };
 
-SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventID, int windowX, int windowY);
+/// For ServoUnityPointerEventID_Press and ServoUnityPointerEventID_Release, eventParam0 is MouseButtonID.
+enum {
+    ServoUnityPointerEventMouseButtonID_Left = 0,
+    ServoUnityPointerEventMouseButtonID_Right = 1,
+    ServoUnityPointerEventMouseButtonID_Middle = 2,
+};
+
+SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventParam0, int eventParam1, int eventID, int windowX, int windowY);
 
 enum {
 	ServoUnityParam_b_CloseNativeWindowOnClose = 0,

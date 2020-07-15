@@ -55,7 +55,7 @@ public static class ServoUnityPlugin_pinvoke
     public static extern void servoUnityKeyEvent(int windowIndex, int keyCode);
     
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public static extern void servoUnityWindowPointerEvent(int windowIndex, int eventID, int windowX, int windowY);
+    public static extern void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, int windowX, int windowY);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern int servoUnityGetWindowCount();

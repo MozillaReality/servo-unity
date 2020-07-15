@@ -378,22 +378,47 @@ void ServoUnityWindowGL::pointerOver(int x, int y) {
     runOnServoThread([=] {mouse_move(x, y);});
 }
 
-void ServoUnityWindowGL::pointerPress(int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerPress(%d, %d)\n", x, y);
-    if (!m_servoGLInited) return;
-    runOnServoThread([=] {mouse_down(x, y, CMouseButton::Left);});
+static CMouseButton getServoButton(int button) {
+    switch (button) {
+        case ServoUnityPointerEventMouseButtonID_Left:
+            return CMouseButton::Left;
+            break;
+        case ServoUnityPointerEventMouseButtonID_Right:
+            return CMouseButton::Right;
+            break;
+        case ServoUnityPointerEventMouseButtonID_Middle:
+            return CMouseButton::Middle;
+            break;
+        default:
+            SERVOUNITYLOGw("getServoButton unknown button %d.\n", button);
+            return CMouseButton::Left;
+            break;
+    };
 }
 
-void ServoUnityWindowGL::pointerRelease(int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerRelease(%d, %d)\n", x, y);
+void ServoUnityWindowGL::pointerPress(int button, int x, int y) {
+	SERVOUNITYLOGi("ServoUnityWindowGL::pointerPress(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
-    runOnServoThread([=] {mouse_up(x, y, CMouseButton::Left);});
+    runOnServoThread([=] {mouse_down(x, y, getServoButton(button));});
 }
 
-void ServoUnityWindowGL::pointerScrollDiscrete(int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d)\n", x, y);
+void ServoUnityWindowGL::pointerRelease(int button, int x, int y) {
+	SERVOUNITYLOGi("ServoUnityWindowGL::pointerRelease(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
-    runOnServoThread([=] {scroll(x, y, 0, 0);});
+    runOnServoThread([=] {mouse_up(x, y, getServoButton(button));});
+}
+
+void ServoUnityWindowGL::pointerClick(int button, int x, int y) {
+    SERVOUNITYLOGi("ServoUnityWindowGL::pointerClick(%d, %d, %d)\n", button, x, y);
+    if (!m_servoGLInited) return;
+    if (button != 0) return;
+    runOnServoThread([=] {click((float)x, (float)y);});
+}
+
+void ServoUnityWindowGL::pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) {
+	SERVOUNITYLOGi("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d, %d, %d)\n", x_scroll, y_scroll, x, y);
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {scroll(x_scroll, y_scroll, x, y);});
 }
 
 void ServoUnityWindowGL::keyPress(int charCode) {

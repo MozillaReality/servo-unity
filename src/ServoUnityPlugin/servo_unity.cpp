@@ -420,7 +420,7 @@ void servoUnityCleanupRenderer(int windowIndex)
     window_iter->second->cleanupRenderer();
 }
 
-void servoUnityWindowPointerEvent(int windowIndex, int eventID, int windowX, int windowY)
+void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, int windowX, int windowY)
 {
 	auto window_iter = s_windows.find(windowIndex);
 	if (window_iter == s_windows.end()) return;
@@ -436,13 +436,16 @@ void servoUnityWindowPointerEvent(int windowIndex, int eventID, int windowX, int
 		window_iter->second->pointerOver(windowX, windowY);
 		break;
 	case ServoUnityPointerEventID_Press:
-		window_iter->second->pointerPress(windowX, windowY);
+		window_iter->second->pointerPress(eventParam0, windowX, windowY);
 		break;
 	case ServoUnityPointerEventID_Release:
-		window_iter->second->pointerRelease(windowX, windowY);
+		window_iter->second->pointerRelease(eventParam0, windowX, windowY);
 		break;
+    case ServoUnityPointerEventID_Click:
+        window_iter->second->pointerClick(eventParam0, windowX, windowY);
+        break;
 	case ServoUnityPointerEventID_ScrollDiscrete:
-		window_iter->second->pointerScrollDiscrete(windowX, windowY);
+		window_iter->second->pointerScrollDiscrete(eventParam0, eventParam1, windowX, windowY);
 		break;
 	default:
 		break;

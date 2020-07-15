@@ -58,9 +58,10 @@ public:
 	void pointerEnter() override;
 	void pointerExit() override;
 	void pointerOver(int x, int y) override;
-	void pointerPress(int x, int y) override;
-	void pointerRelease(int x, int y) override;
-	void pointerScrollDiscrete(int x, int y) override;
+	void pointerPress(int button, int x, int y) override;
+	void pointerRelease(int button, int x, int y) override;
+	void pointerClick(int button, int x, int y) override;
+    void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) override;
 	void keyPress(int charCode) override;
 };
 

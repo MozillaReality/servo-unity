@@ -17,9 +17,12 @@ public class ServoUnityMousePointer : ServoUnityPointer
 {
     protected override void Update()
     {
-        buttonDown = Input.GetMouseButtonDown(0);
-        buttonUp = Input.GetMouseButtonUp(0);
-        button = Input.GetMouseButton(0);
+        for (int i = 0; i < 3; i++)
+        {
+            buttonDown[i] = Input.GetMouseButtonDown(i);
+            buttonUp[i] = Input.GetMouseButtonUp(i);
+            button[i] = Input.GetMouseButton(i);
+        }
         scrollDelta = Input.mouseScrollDelta;
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         base.Update();

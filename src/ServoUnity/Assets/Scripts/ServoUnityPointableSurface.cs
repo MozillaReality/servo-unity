@@ -18,13 +18,13 @@ public class ServoUnityPointableSurface : MonoBehaviour
     public void PointerEnter()
     {
         //Debug.Log("PointerEnter()");
-        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Enter, -1, -1);
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Enter, -1, -1, - 1, -1);
     }
 
     public void PointerExit()
     {
         //Debug.Log("PointerExit()");
-        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Exit, -1, -1);
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Exit, -1, -1, -1, -1);
     }
 
     public void PointerOver(Vector2 texCoord)
@@ -32,30 +32,40 @@ public class ServoUnityPointableSurface : MonoBehaviour
         int x = (int) (texCoord.x * videoSize.x);
         int y = (int) (texCoord.y * videoSize.y);
         //Debug.Log("PointerOver(" + x + ", " + y + ")");
-        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Over, x, y);
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Over, -1, -1, x, y);
     }
 
-    public void PointerPress(Vector2 texCoord)
+    public void PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID button, Vector2 texCoord)
     {
         int x = (int) (texCoord.x * videoSize.x);
         int y = (int) (texCoord.y * videoSize.y);
         //Debug.Log("PointerPress(" + x + ", " + y + ")");
-        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Press, x, y);
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Press, (int)button, -1, x, y);
     }
 
-    public void PointerRelease(Vector2 texCoord)
+    public void PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID button, Vector2 texCoord)
     {
-        int x = (int) (texCoord.x * videoSize.x);
-        int y = (int) (texCoord.y * videoSize.y);
+        int x = (int)(texCoord.x * videoSize.x);
+        int y = (int)(texCoord.y * videoSize.y);
         //Debug.Log("PointerRelease(" + x + ", " + y + ")");
-        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Release, x, y);
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Release, (int)button, -1, x, y);
     }
 
-    public void PointerScrollDiscrete(Vector2 delta)
+    public void PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID button, Vector2 texCoord)
     {
-        int x = (int) (delta.x);
-        int y = (int) (delta.y);
-        //Debug.Log("PointerScroll(" + x + ", " + y + ")");
-        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.ScrollDiscrete, x, y);
+        int x = (int)(texCoord.x * videoSize.x);
+        int y = (int)(texCoord.y * videoSize.y);
+        //Debug.Log("PointerClick(" + x + ", " + y + ")");
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Click, (int)button, -1, x, y);
+    }
+
+    public void PointerScrollDiscrete(Vector2 delta, Vector2 texCoord)
+    {
+        int scroll_x = (int)delta.x;
+        int scroll_y = (int)delta.y;
+        int x = (int)texCoord.x;
+        int y = (int)texCoord.y;
+        //Debug.Log("PointerScrollDiscrete(" + scroll_x + ", " + scroll_y + ", " + x + ", " + y + ")");
+        servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.ScrollDiscrete, scroll_x, scroll_y, x, y);
     }
 }
