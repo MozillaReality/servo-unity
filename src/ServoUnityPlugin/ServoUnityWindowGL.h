@@ -39,6 +39,9 @@ private:
     bool m_servoGLInited;
     std::deque< std::function<void()> > m_tasks;
     std::mutex m_tasksLock;
+    bool m_updateContinuously;
+    bool m_updateOnce;
+    std::mutex m_updateLock;
 
     static void on_load_started(void);
     static void on_load_ended(void);

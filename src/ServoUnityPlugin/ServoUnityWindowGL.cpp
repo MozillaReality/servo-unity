@@ -54,7 +54,9 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
     m_windowCreatedCallback(nullptr),
     m_windowResizedCallback(nullptr),
     m_browserEventCallback(nullptr),
-    m_servoGLInited(false)
+    m_servoGLInited(false),
+    m_updateContinuously(false),
+    m_updateOnce(false)
 {
 }
 
@@ -243,6 +245,19 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
         m_servoGLInited = true;
     }
 
+    // Updates first.
+    bool update;
+    {
+        std::lock_guard<std::mutex> lock(m_updateLock);
+        if (m_updateOnce || m_updateContinuously) {
+            update = true;
+            m_updateOnce = false;
+        } else {
+            update = false;
+        }
+    }
+    if (update) perform_updates();
+
     // Service task queue.
     while (true) {
         std::function<void()> task;
@@ -395,7 +410,9 @@ void ServoUnityWindowGL::on_history_changed(bool can_go_back, bool can_go_forwar
 void ServoUnityWindowGL::on_animating_changed(bool animating)
 {
     SERVOUNITYLOGi("servo callback on_animating_changed(%s)\n", animating ? "true" : "false");
-    // TODO: change the rate of callbacks
+    if (!s_servo) return;
+    std::lock_guard<std::mutex> lock(s_servo->m_updateLock);
+    s_servo->m_updateContinuously = animating;
 }
 
 void ServoUnityWindowGL::on_shutdown_complete(void)
@@ -513,7 +530,8 @@ void ServoUnityWindowGL::wakeup(void)
 {
     SERVOUNITYLOGd("servo callback wakeup on thread %" PRIu64 "\n", getThreadID());
     if (!s_servo) return;
-    s_servo->runOnServoThread([]{perform_updates();});
+    std::lock_guard<std::mutex> lock(s_servo->m_updateLock);
+    s_servo->m_updateOnce = true;
 }
 
 #endif // SUPPORT_OPENGL_CORE
