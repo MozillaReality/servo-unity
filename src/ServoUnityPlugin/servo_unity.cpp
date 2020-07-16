@@ -22,6 +22,7 @@
 #include <assert.h>
 #include <map>
 #include "simpleservo.h"
+#include "utils.h"
 
 //
 // Unity low-level plugin interface.
@@ -78,6 +79,7 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
 	switch (eventType) {
 		case kUnityGfxDeviceEventInitialize:
             {
+                SERVOUNITYLOGi("OnGraphicsDeviceEvent(kUnityGfxDeviceEventInitialize) called on thread %" PRIu64 ".\n", getThreadID());
                 s_RendererType = s_Graphics->GetRenderer();
                 switch (s_RendererType) {
 #ifdef SUPPORT_D3D11
@@ -219,14 +221,15 @@ void servoUnitySetResourcesPath(const char *path)
 	}
 }
 
-void servoUnityInitServo(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
+void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback)
 {
+    SERVOUNITYLOGi("servoUnityInit called on thread %" PRIu64 ".\n", getThreadID());
 	m_windowCreatedCallback = windowCreatedCallback;
 	m_windowResizedCallback = windowResizedCallback;
 	m_browserEventCallback = browserEventCallback;
 }
 
-void servoUnityFinaliseServo(void)
+void servoUnityFinalise(void)
 {
 	m_windowCreatedCallback = nullptr;
 	m_windowResizedCallback = nullptr;
@@ -305,10 +308,12 @@ void servoUnitySetParamBool(int param, bool flag)
 
 void servoUnitySetParamInt(int param, int val)
 {
+    // No parameters to set yet.
 }
 
 void servoUnitySetParamFloat(int param, float val)
 {
+    // No parameters to set yet.
 }
 
 bool servoUnityGetParamBool(int param)
@@ -325,11 +330,13 @@ bool servoUnityGetParamBool(int param)
 
 int servoUnityGetParamInt(int param)
 {
+    // No parameters to query yet.
 	return 0;
 }
 
 float servoUnityGetParamFloat(int param)
 {
+    // No parameters to query yet.
 	return 0.0f;
 }
 

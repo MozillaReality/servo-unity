@@ -9,6 +9,8 @@
 //
 // Author(s): Philip Lamb
 //
+// An implementation for a Servo window that renders to an OpenGL texture.
+//
 
 #pragma once
 #include "ServoUnityWindow.h"

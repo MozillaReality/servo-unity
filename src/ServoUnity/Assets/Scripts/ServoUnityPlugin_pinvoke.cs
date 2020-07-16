@@ -43,10 +43,10 @@ public static class ServoUnityPlugin_pinvoke
     public static extern bool servoUnityGetVersion([MarshalAs(UnmanagedType.LPStr)]StringBuilder buffer, int length);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public static extern void servoUnityInitServo(ServoUnityPluginWindowCreatedCallback callback, ServoUnityPluginWindowResizedCallback resizedCallback, ServoUnityPluginBrowserEventCallback browserEventCallback);
+    public static extern void servoUnityInit(ServoUnityPluginWindowCreatedCallback callback, ServoUnityPluginWindowResizedCallback resizedCallback, ServoUnityPluginBrowserEventCallback browserEventCallback);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public static extern void servoUnityFinaliseServo();
+    public static extern void servoUnityFinalise();
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnitySetResourcesPath(string path);
@@ -83,12 +83,29 @@ public static class ServoUnityPlugin_pinvoke
     [return: MarshalAsAttribute(UnmanagedType.I1)]
     public static extern bool servoUnityCloseAllWindows();
 
-    // Must be called from rendering thread with active rendering context.
+    ///
+    /// Must be called from rendering thread with active rendering context.
+    /// As an alternative to invoking directly, an equivalent invocation can be invoked via call this sequence:
+    ///     servoUnitySetRenderEventFunc1Params(windowIndex, timeDelta);
+    ///     (*GetRenderEventFunc())(1);
+    ///
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta);
 
+    ///
+    /// Must be called from rendering thread with active rendering context.
+    /// As an alternative to invoking directly, an equivalent invocation can be invoked via call this sequence:
+    ///     servoUnitySetRenderEventFunc2Param(windowIndex);
+    ///     (*GetRenderEventFunc())(2);
+    ///
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnityCleanupRenderer(int windowIndex);
+
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnitySetRenderEventFunc1Params(int windowIndex, float timeDelta);
+
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnitySetRenderEventFunc2Param(int windowIndex);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnitySetParamBool(int param, bool flag);

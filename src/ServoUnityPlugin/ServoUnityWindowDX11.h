@@ -9,6 +9,10 @@
 //
 // Author(s): Philip Lamb
 //
+// An implementation for a Servo window that renders to a DirectX 11 texture handle.
+// Note that this is presently UNIMPLEMENTED, but the class is retained here for
+// possible future development.
+//
 
 #pragma once
 #include "ServoUnityWindow.h"

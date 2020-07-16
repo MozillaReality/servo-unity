@@ -24,6 +24,7 @@
 #endif
 #include <stdlib.h>
 #include "servo_unity_log.h"
+#include "utils.h"
 
 void ServoUnityWindowGL::initDevice() {
 #ifdef _WIN32
@@ -263,90 +264,12 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
     wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
 #endif
 
-#if 0
-    // Auto-generate a dummy texture. A 100 x 100 square, oscillating in x dimension.
-	static int k = 0;
-	int i, j;
-	k++;
-	if (k > 100) k = -100;
-	memset(m_buf, 255, m_size.w * m_size.h * m_pixelSize); // Clear to white.
-	// Assumes BGRA32!
-	for (j = m_size.h / 2 - 50; j < m_size.h / 2 - 25; j++) {
-		for (i = m_size.w / 2 - 50 + k; i < m_size.w / 2 + 50 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-	}
-	for (j = m_size.h / 2 - 25; j < m_size.h / 2 - 8; j++) {
-		// Black bar (25 pixels wide).
-		for (i = m_size.w / 2 - 50 + k; i < m_size.w / 2 - 25 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-		// Red bar (17 pixels wide).
-		for (i = m_size.w / 2 + 8 + k; i < m_size.w / 2 + 25 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = 0; m_buf[(j*m_size.w + i) * 4 + 2] = m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-		// Black bar (25 pixels wide).
-		for (i = m_size.w / 2 + 25 + k; i < m_size.w / 2 + 50 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-	}
-	for (j = m_size.h / 2 - 8; j < m_size.h / 2 + 8; j++) {
-		// Black bar (25 pixels wide).
-		for (i = m_size.w / 2 - 50 + k; i < m_size.w / 2 - 25 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-		// Green bar (16 pixels wide).
-		for (i = m_size.w / 2 - 8 + k; i < m_size.w / 2 + 8 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = 0; m_buf[(j*m_size.w + i) * 4 + 1] = 255; m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-		// Black bar (25 pixels wide).
-		for (i = m_size.w / 2 + 25 + k; i < m_size.w / 2 + 50 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-	}
-	for (j = m_size.h / 2 + 8; j < m_size.h / 2 + 25; j++) {
-		// Black bar (25 pixels wide).
-		for (i = m_size.w / 2 - 50 + k; i < m_size.w / 2 - 25 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-		// Blue bar (17 pixels wide).
-		for (i = m_size.w / 2 - 25 + k; i < m_size.w / 2 - 8 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = 255; m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-		// Black bar (25 pixels wide).
-		for (i = m_size.w / 2 + 25 + k; i < m_size.w / 2 + 50 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-	}
-	for (j = m_size.h / 2 + 25; j < m_size.h / 2 + 50; j++) {
-		for (i = m_size.w / 2 - 50 + k; i < m_size.w / 2 + 50 + k; i++) {
-			m_buf[(j*m_size.w + i) * 4 + 0] = m_buf[(j*m_size.w + i) * 4 + 1] = m_buf[(j*m_size.w + i) * 4 + 2] = 0; m_buf[(j*m_size.w + i) * 4 + 3] = 255;
-		}
-	}
-
-	// Setup a texture ourselves:
-	//glGenTextures(1, &m_texID);
-	//glBindTexture(GL_TEXTURE_2D, m_texID);
-	//glActiveTexture(GL_TEXTURE0);
-	//glTexImage2D(GL_TEXTURE_2D, 0, m_pixelIntFormatGL, m_size.w, m_size.h, 0, m_pixelFormatGL, m_pixelTypeGL, m_buf);
-	////glTexImage2D(GL_TEXTURE_RECTANGLE, 0, m_pixelIntFormatGL, m_size.w, m_size.h, 0, m_pixelFormatGL, m_pixelTypeGL, m_buf);
-	// Would also later require cleanup:
-	//glBindTexture(GL_TEXTURE_2D, 0);
-	//glDeleteTextures(1, &m_texID);
-	//m_texID = 0;
-
-	glBindTexture(GL_TEXTURE_2D, m_texID);
-	glActiveTexture(GL_TEXTURE0);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_size.w, m_size.h, GL_RGBA, GL_UNSIGNED_BYTE, m_buf);
-	//glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, m_size.w, m_size.h, GL_RGBA, GL_UNSIGNED_BYTE, m_buf);
-#else
     fill_gl_texture(m_texID, m_size.w, m_size.h);
 
-#  ifdef __APPLE__
+#ifdef __APPLE__
     CGLSetCurrentContext(glContextUnity);
-#  elif defined(_WIN32)
+#elif defined(_WIN32)
     wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
-#  endif
 #endif
 }
 
@@ -364,15 +287,15 @@ void ServoUnityWindowGL::runOnServoThread(std::function<void()> task) {
 }
 
 void ServoUnityWindowGL::pointerEnter() {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerEnter()\n");
+	SERVOUNITYLOGd("ServoUnityWindowGL::pointerEnter()\n");
 }
 
 void ServoUnityWindowGL::pointerExit() {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerExit()\n");
+	SERVOUNITYLOGd("ServoUnityWindowGL::pointerExit()\n");
 }
 
 void ServoUnityWindowGL::pointerOver(int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerOver(%d, %d)\n", x, y);
+	SERVOUNITYLOGd("ServoUnityWindowGL::pointerOver(%d, %d)\n", x, y);
     if (!m_servoGLInited) return;
 
     runOnServoThread([=] {mouse_move(x, y);});
@@ -397,26 +320,26 @@ static CMouseButton getServoButton(int button) {
 }
 
 void ServoUnityWindowGL::pointerPress(int button, int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerPress(%d, %d, %d)\n", button, x, y);
+	SERVOUNITYLOGd("ServoUnityWindowGL::pointerPress(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
     runOnServoThread([=] {mouse_down(x, y, getServoButton(button));});
 }
 
 void ServoUnityWindowGL::pointerRelease(int button, int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerRelease(%d, %d, %d)\n", button, x, y);
+	SERVOUNITYLOGd("ServoUnityWindowGL::pointerRelease(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
     runOnServoThread([=] {mouse_up(x, y, getServoButton(button));});
 }
 
 void ServoUnityWindowGL::pointerClick(int button, int x, int y) {
-    SERVOUNITYLOGi("ServoUnityWindowGL::pointerClick(%d, %d, %d)\n", button, x, y);
+    SERVOUNITYLOGd("ServoUnityWindowGL::pointerClick(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
-    if (button != 0) return;
+    if (button != 0) return; // Servo assumes that "clicks" arise only from the primary button.
     runOnServoThread([=] {click((float)x, (float)y);});
 }
 
 void ServoUnityWindowGL::pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d, %d, %d)\n", x_scroll, y_scroll, x, y);
+	SERVOUNITYLOGd("ServoUnityWindowGL::pointerScrollDiscrete(%d, %d, %d, %d)\n", x_scroll, y_scroll, x, y);
     if (!m_servoGLInited) return;
     runOnServoThread([=] {scroll(x_scroll, y_scroll, x, y);});
 }
@@ -426,8 +349,12 @@ void ServoUnityWindowGL::keyPress(int charCode) {
 }
 
 //
-// Callback implementations. These are static, so have to fetch the active instance
+// Callback implementations. These are all necesarily static, so have to fetch the active instance
 // via the static instance pointer s_servo.
+//
+// Callbacks can come from any Servo thread (and there are many) so care must be taken
+// to ensure that any call back into Unity is on the Unity thread, or any work done
+// in Servo is routed back to the main Servo thread.
 //
 
 void ServoUnityWindowGL::on_load_started(void)
@@ -488,12 +415,14 @@ void ServoUnityWindowGL::on_ime_state_changed(bool show)
 const char *ServoUnityWindowGL::get_clipboard_contents(void)
 {
     SERVOUNITYLOGi("servo callback get_clipboard_contents\n");
+    // TODO: implement
     return nullptr;
 }
 
 void ServoUnityWindowGL::set_clipboard_contents(const char *contents)
 {
     SERVOUNITYLOGi("servo callback set_clipboard_contents: %s\n", contents);
+    // TODO: implement
 }
 
 void ServoUnityWindowGL::on_media_session_metadata(const char *title, const char *album, const char *artist)
@@ -582,7 +511,7 @@ void ServoUnityWindowGL::on_log_output(const char *buffer, uint32_t buffer_lengt
 
 void ServoUnityWindowGL::wakeup(void)
 {
-    SERVOUNITYLOGi("servo callback wakeup\n");
+    SERVOUNITYLOGd("servo callback wakeup on thread %" PRIu64 "\n", getThreadID());
     if (!s_servo) return;
     s_servo->runOnServoThread([]{perform_updates();});
 }

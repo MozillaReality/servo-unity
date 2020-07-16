@@ -77,7 +77,7 @@ public class ServoUnityPlugin
         else return "";
     }
 
-    public void ServoUnityInitServo(ServoUnityPluginWindowCreatedCallback wccb, ServoUnityPluginWindowResizedCallback wrcb, ServoUnityPluginBrowserEventCallback becb)
+    public void ServoUnityInit(ServoUnityPluginWindowCreatedCallback wccb, ServoUnityPluginWindowResizedCallback wrcb, ServoUnityPluginBrowserEventCallback becb)
     {
         windowCreatedCallback = wccb;
         windowResizedCallback = wrcb;
@@ -88,12 +88,12 @@ public class ServoUnityPlugin
         windowResizedCallbackGCH = GCHandle.Alloc(windowResizedCallback);
         browserEventCallbackGCH = GCHandle.Alloc(browserEventCallback);
         
-        ServoUnityPlugin_pinvoke.servoUnityInitServo(windowCreatedCallback, windowResizedCallback, browserEventCallback);
+        ServoUnityPlugin_pinvoke.servoUnityInit(windowCreatedCallback, windowResizedCallback, browserEventCallback);
     }
 
-    public void ServoUnityFinaliseServo()
+    public void ServoUnityFinalise()
     {
-        ServoUnityPlugin_pinvoke.servoUnityFinaliseServo();
+        ServoUnityPlugin_pinvoke.servoUnityFinalise();
         windowCreatedCallback = null;
         windowResizedCallback = null;
         browserEventCallback = null;
@@ -182,9 +182,19 @@ public class ServoUnityPlugin
 
     public void ServoUnityRequestWindowUpdate(int windowIndex, float timeDelta)
     {
-        //ServoUnityPlugin_pinvoke.servoUnityRequestWindowUpdate(windowIndex, timeDelta);
+        // Rather than calling ServoUnityPlugin_pinvoke.servoUnityRequestWindowUpdate(windowIndex, timeDelta)
+        // directly, make sure the call runs on the rendering thread.
         ServoUnityPlugin_pinvoke.servoUnitySetRenderEventFunc1Params(windowIndex, timeDelta);
         GL.IssuePluginEvent(ServoUnityPlugin_pinvoke.GetRenderEventFunc(), 1);
+        GL.InvalidateState();
+    }
+
+    public void ServoUnityCleanupRenderer(int windowIndex)
+    {
+        // Rather than calling ServoUnityPlugin_pinvoke.servoUnityCleanupRenderer(windowIndex)
+        // directly, make sure the call runs on the rendering thread.
+        ServoUnityPlugin_pinvoke.servoUnitySetRenderEventFunc2Param(windowIndex);
+        GL.IssuePluginEvent(ServoUnityPlugin_pinvoke.GetRenderEventFunc(), 2);
         GL.InvalidateState();
     }
 

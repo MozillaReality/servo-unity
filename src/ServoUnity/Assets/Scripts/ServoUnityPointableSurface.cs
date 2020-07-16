@@ -30,7 +30,7 @@ public class ServoUnityPointableSurface : MonoBehaviour
     public void PointerOver(Vector2 texCoord)
     {
         int x = (int) (texCoord.x * videoSize.x);
-        int y = (int) (texCoord.y * videoSize.y);
+        int y = (int) ((1.0f - texCoord.y) * videoSize.y); // Window origin is top-left.
         //Debug.Log("PointerOver(" + x + ", " + y + ")");
         servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Over, -1, -1, x, y);
     }
@@ -38,7 +38,7 @@ public class ServoUnityPointableSurface : MonoBehaviour
     public void PointerPress(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID button, Vector2 texCoord)
     {
         int x = (int) (texCoord.x * videoSize.x);
-        int y = (int) (texCoord.y * videoSize.y);
+        int y = (int) ((1.0f - texCoord.y) * videoSize.y);
         //Debug.Log("PointerPress(" + x + ", " + y + ")");
         servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Press, (int)button, -1, x, y);
     }
@@ -46,7 +46,7 @@ public class ServoUnityPointableSurface : MonoBehaviour
     public void PointerRelease(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID button, Vector2 texCoord)
     {
         int x = (int)(texCoord.x * videoSize.x);
-        int y = (int)(texCoord.y * videoSize.y);
+        int y = (int)((1.0f - texCoord.y) * videoSize.y);
         //Debug.Log("PointerRelease(" + x + ", " + y + ")");
         servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Release, (int)button, -1, x, y);
     }
@@ -54,7 +54,7 @@ public class ServoUnityPointableSurface : MonoBehaviour
     public void PointerClick(ServoUnityPlugin.ServoUnityPointerEventMouseButtonID button, Vector2 texCoord)
     {
         int x = (int)(texCoord.x * videoSize.x);
-        int y = (int)(texCoord.y * videoSize.y);
+        int y = (int)((1.0f - texCoord.y) * videoSize.y);
         //Debug.Log("PointerClick(" + x + ", " + y + ")");
         servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.Click, (int)button, -1, x, y);
     }
@@ -63,8 +63,8 @@ public class ServoUnityPointableSurface : MonoBehaviour
     {
         int scroll_x = (int)delta.x;
         int scroll_y = (int)delta.y;
-        int x = (int)texCoord.x;
-        int y = (int)texCoord.y;
+        int x = (int)(texCoord.x * videoSize.x);
+        int y = (int)((1.0f - texCoord.y) * videoSize.y);
         //Debug.Log("PointerScrollDiscrete(" + scroll_x + ", " + scroll_y + ", " + x + ", " + y + ")");
         servo_unity_plugin?.ServoUnityWindowPointerEvent(_windowIndex, ServoUnityPlugin.ServoUnityPointerEventID.ScrollDiscrete, scroll_x, scroll_y, x, y);
     }

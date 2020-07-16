@@ -170,13 +170,15 @@ SERVO_UNITY_EXTERN void servoUnityFlushLog(void);
 ///
 SERVO_UNITY_EXTERN bool servoUnityGetVersion(char *buffer, int length);
 
-SERVO_UNITY_EXTERN void servoUnityInitServo(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback);
+SERVO_UNITY_EXTERN void servoUnityInit(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback, PFN_WINDOWRESIZEDCALLBACK windowResizedCallback, PFN_BROWSEREVENTCALLBACK browserEventCallback);
 
-SERVO_UNITY_EXTERN void servoUnityFinaliseServo(void);
+SERVO_UNITY_EXTERN void servoUnityFinalise(void);
 
-// Set the path in which the plugin should look for resources. Should be full filesystem path without trailing slash.
-// This should be called early on in the plugin lifecycle, typically from a Unity MonoBehaviour.OnEnable() event.
-// Normally this would be the path to Unity's StreamingAssets folder, which holds unprocessed resources for use at runtime.
+///
+/// Set the path in which the plugin should look for resources. Should be full filesystem path without trailing slash.
+/// This should be called early on in the plugin lifecycle, typically from a Unity MonoBehaviour.OnEnable() event.
+/// Normally this would be the path to Unity's StreamingAssets folder, which holds unprocessed resources for use at runtime.
+///
 SERVO_UNITY_EXTERN void servoUnitySetResourcesPath(const char *path);
 
 SERVO_UNITY_EXTERN void servoUnityKeyEvent(int windowIndex, int keyCode);
@@ -232,7 +234,8 @@ enum {
 	ServoUnityPointerEventID_ScrollDiscrete = 6
 };
 
-/// For ServoUnityPointerEventID_Press and ServoUnityPointerEventID_Release, eventParam0 is MouseButtonID.
+/// For ServoUnityPointerEventID_Press, ServoUnityPointerEventID_Release, and ServoUnityPointerEventID_Click,
+/// eventParam0 is MouseButtonID.
 enum {
     ServoUnityPointerEventMouseButtonID_Left = 0,
     ServoUnityPointerEventMouseButtonID_Right = 1,

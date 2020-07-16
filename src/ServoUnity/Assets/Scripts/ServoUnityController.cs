@@ -10,37 +10,37 @@
 // described below:
 //
 //                              
-//  ServoUnityController  ServoUnityWindow         Unity Plugin                libServo 
-//       +                  +                     servo_unity.dll)                |                   
-//       +                  +                         +                           |   
-//   [Start]                +                         +                           |
-//       |                  +  servoUnityInitServo    +                           |   
-//       | -----------------------------------------> |                           |
-//       +                  +                   Initialize plugin,                |
-//       +                  +                   recording passed-in               |
-//       +                  +                   callbacks                         |      
-//       +               [Start]                      +                           | 
-//       +                  |                         +                           | 
-//       +                  | servoUnityRequestNewWindow +                        | 
-//       +                  | ----------------------> |                           | 
-//       +                  +                         |     CreateServoWindow     |                 
-//       +                  +                         | ------------------------> |                 
-//       +                  +                         |                           |    
-//       +                  +                         |                    Return with window id
-//       +                  +                         |                    and texture handle  
-//       +                  +                         |                           |    
-//       +                  +                         | <------------------------ |                 
-//       +                  +                         |                           +    
-//       +                  +                   Record texture handle.            + 
-//       |                  +                   Retrieve texture                  + 
-//       |                  +                   format and size from              + 
-//       |                  +                   texture handle.                   + 
-//       |                  +                   Invoke windowCreatedCallback      + 
-//       |         OnServoWindowCreated               |                           + 
-//       | <----------------------------------------- |                           + 
-//       |   WasCreated     +                         +                           |
-//       | -------------->  |                         +                           | 
-//       |                  |                         +                           | 
+//  ServoUnityController  ServoUnityWindow           Unity Plugin             libsimpleservo2 
+//       +                  +                        servo_unity.dll)                |                   
+//       +                  +                            +                           |   
+//   [Start]                +                            +                           |
+//       |                  +     servoUnityInit         +                           |   
+//       | --------------------------------------------> |                           |
+//       +                  +                      Initialize plugin,                |
+//       +                  +                      recording passed-in               |
+//       +                  +                      callbacks                         |      
+//       +               [Start]                         +                           | 
+//       +                  |                            +                           | 
+//       +                  | servoUnityRequestNewWindow +                           | 
+//       +                  | -------------------------> |                           | 
+//       +                  +                            |     CreateServoWindow     |                 
+//       +                  +                            | ------------------------> |                 
+//       +                  +                            |                           |    
+//       +                  +                            |                    Return with window id
+//       +                  +                            |                    and texture handle  
+//       +                  +                            |                           |    
+//       +                  +                            | <------------------------ |                 
+//       +                  +                            |                           +    
+//       +                  +                      Record texture handle.            + 
+//       |                  +                      Retrieve texture                  + 
+//       |                  +                      format and size from              + 
+//       |                  +                      texture handle.                   + 
+//       |                  +                      Invoke windowCreatedCallback      + 
+//       |         OnServoWindowCreated                  |                           + 
+//       | <-------------------------------------------- |                           + 
+//       |   WasCreated     +                            +                           |
+//       | ---------------> |                            +                           | 
+//       |                  |                            +                           | 
 //      ...                ...                       ...                         ...  
 
 
@@ -206,7 +206,7 @@ public class ServoUnityController : MonoBehaviour
         Debug.Log("ServoUnityController.Start()");
         Debug.Log("Plugin version " + servo_unity_plugin.ServoUnityGetVersion());
 
-        servo_unity_plugin.ServoUnityInitServo(OnServoWindowCreated, OnServoWindowResized, OnServoBrowserEvent);
+        servo_unity_plugin.ServoUnityInit(OnServoWindowCreated, OnServoWindowResized, OnServoBrowserEvent);
     }
 
     void Update()
@@ -314,7 +314,7 @@ public class ServoUnityController : MonoBehaviour
             w.Close();
         }
 
-        servo_unity_plugin.ServoUnityFinaliseServo();
+        servo_unity_plugin.ServoUnityFinalise();
     }
 
     public SERVO_UNITY_LOG_LEVEL LogLevel

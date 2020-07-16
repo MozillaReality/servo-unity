@@ -12,6 +12,7 @@
 		4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8112464FBE000E47295 /* servo_unity_log.c */; };
 		4A92A8192464FBE000E47295 /* ServoUnityWindowGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8122464FBE000E47295 /* ServoUnityWindowGL.cpp */; };
 		4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8142464FBE000E47295 /* servo_unity.cpp */; };
+		4A94C56E24BFAA5500BA301C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A94C56D24BFAA5500BA301C /* utils.c */; };
 		4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,8 @@
 		4A92A8142464FBE000E47295 /* servo_unity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = servo_unity.cpp; path = ../servo_unity.cpp; sourceTree = "<group>"; };
 		4A92A8152464FBE000E47295 /* ServoUnityWindowDX11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServoUnityWindowDX11.h; path = ../ServoUnityWindowDX11.h; sourceTree = "<group>"; };
 		4A92A8162464FBE000E47295 /* servo_unity_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_c.h; path = ../servo_unity_c.h; sourceTree = "<group>"; };
+		4A94C56C24BFAA5500BA301C /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../utils.h; sourceTree = "<group>"; };
+		4A94C56D24BFAA5500BA301C /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = utils.c; path = ../utils.c; sourceTree = "<group>"; };
 		4AE3DD1824987F400082B880 /* libsimpleservo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsimpleservo.dylib; path = ../../ServoUnity/Assets/Plugins/libsimpleservo.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,6 +72,8 @@
 				4A92A80E2464FBE000E47295 /* servo_unity_log.h */,
 				4A92A8112464FBE000E47295 /* servo_unity_log.c */,
 				4A33AC0F247DFEFC00915C58 /* simpleservo.h */,
+				4A94C56C24BFAA5500BA301C /* utils.h */,
+				4A94C56D24BFAA5500BA301C /* utils.c */,
 				4A92A8082464FB8400E47295 /* Info.plist */,
 				4A92A8062464FB8400E47295 /* Products */,
 				4A49CC1424690FC400B77CCA /* Frameworks */,
@@ -171,6 +176,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A94C56E24BFAA5500BA301C /* utils.c in Sources */,
 				4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */,
 				4A92A8182464FBE000E47295 /* servo_unity_log.c in Sources */,
 				4A92A8172464FBE000E47295 /* ServoUnityWindowDX11.cpp in Sources */,
