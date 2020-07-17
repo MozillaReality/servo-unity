@@ -51,6 +51,7 @@ public:
 	virtual int format() = 0;
 	virtual void setNativePtr(void* texPtr) = 0;
 	virtual void* nativePtr() = 0;
+    virtual void serviceWindowEvents(void) = 0;
 	virtual void requestUpdate(float timeDelta) = 0;
     virtual void cleanupRenderer() = 0;
 	

@@ -33,7 +33,6 @@
 		4A92A8162464FBE000E47295 /* servo_unity_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_c.h; path = ../servo_unity_c.h; sourceTree = "<group>"; };
 		4A94C56C24BFAA5500BA301C /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../utils.h; sourceTree = "<group>"; };
 		4A94C56D24BFAA5500BA301C /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = utils.c; path = ../utils.c; sourceTree = "<group>"; };
-		4AE3DD1824987F400082B880 /* libsimpleservo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsimpleservo.dylib; path = ../../ServoUnity/Assets/Plugins/libsimpleservo.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +51,6 @@
 		4A49CC1424690FC400B77CCA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4AE3DD1824987F400082B880 /* libsimpleservo.dylib */,
 				4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */,
 				4A49CC1524690FC400B77CCA /* OpenGL.framework */,
 			);

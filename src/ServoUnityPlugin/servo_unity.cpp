@@ -407,6 +407,16 @@ bool servoUnityRequestWindowSizeChange(int windowIndex, int width, int height)
     return true;
 }
 
+void servoUnityServiceWindowEvents(int windowIndex)
+{
+    auto window_iter = s_windows.find(windowIndex);
+    if (window_iter == s_windows.end()) {
+        SERVOUNITYLOGe("Requested update for non-existent window with index %d.\n", windowIndex);
+        return;
+    }
+    window_iter->second->serviceWindowEvents();
+}
+
 void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta)
 {
 	auto window_iter = s_windows.find(windowIndex);

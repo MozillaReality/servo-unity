@@ -53,6 +53,8 @@ public:
 	void setNativePtr(void* texPtr) override;
 	void* nativePtr() override;
 
+    void serviceWindowEvents(void) override {}
+
 	// Must be called from render thread.
 	void requestUpdate(float timeDelta) override;
 

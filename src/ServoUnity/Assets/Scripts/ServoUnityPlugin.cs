@@ -225,15 +225,21 @@ public class ServoUnityPlugin
     {
         NOP = 0,
         Shutdown = 1,
-        LoadStateChanged = 2,
-        FullscreenStateChanged = 3,
-        IMEStateChanged = 4,
-        Total = 5
+        LoadStateChanged = 2, // eventData1: 0=LoadEnded, 1=LoadStarted,
+        FullscreenStateChanged = 3, // eventData1: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
+        IMEStateChanged = 4, // eventData1: 0=HideIME, 1=ShowIME
+        HistoryChanged = 5, // eventData1: 0=CantGoBack, 1=CanGoBack, eventData1: 0=CantGoForward, 1=CanGoForward
+        Total = 6
     };
 
     public bool ServoUnityCloseWindow(int windowIndex)
     {
         return ServoUnityPlugin_pinvoke.servoUnityCloseWindow(windowIndex);
+    }
+
+    public void ServoUnityServiceWindowEvents(int windowIndex)
+    {
+        ServoUnityPlugin_pinvoke.servoUnityServiceWindowEvents(windowIndex);
     }
 
     public bool ServoUnityCloseAllWindows()

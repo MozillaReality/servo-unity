@@ -176,6 +176,8 @@ public class ServoUnityWindow : ServoUnityPointableSurface
     {
         if (_windowIndex == 0) return;
 
+        servo_unity_plugin.ServoUnityServiceWindowEvents(_windowIndex);
+
         //Debug.Log("ServoUnityWindow.Update() with _windowIndex == " + _windowIndex);
         servo_unity_plugin?.ServoUnityRequestWindowUpdate(_windowIndex, Time.deltaTime);
     }

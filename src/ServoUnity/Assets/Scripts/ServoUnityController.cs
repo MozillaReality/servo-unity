@@ -68,6 +68,8 @@ public class ServoUnityController : MonoBehaviour
 
     public bool DontCloseNativeWindowOnClose = false;
 
+    public ServoUnityNavbarController NavbarController = null;
+
     //
     // MonoBehavior methods.
     //
@@ -240,36 +242,13 @@ public class ServoUnityController : MonoBehaviour
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.LoadStateChanged:
                 {
-                    switch (eventData1)
-                    {
-                        case 0:
-                            // Load ended.
-                            Debug.Log("Servo browser event: load ended.");
-                            break;
-                        case 1:
-                            // Load began.
-                            Debug.Log("Servo browser event: load began.");
-                            break;
-                        default:
-                            break;
-                    }
+                    Debug.Log($"Servo browser event: load {(eventData1 == 1 ? "began" : "ended")}.");
+                    if (NavbarController) NavbarController.OnLoadStateChanged(eventData1 == 1);
                 }
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.IMEStateChanged:
                 {
-                    switch (eventData1)
-                    {
-                        case 0:
-                            // Hide IME.
-                            Debug.Log("Servo browser event: hide IME.");
-                            break;
-                        case 1:
-                            // Show IME.
-                            Debug.Log("Servo browser event: show IME.");
-                            break;
-                        default:
-                            break;
-                    }
+                    Debug.Log($"Servo browser event: {(eventData1 == 1 ? "show" : "hide")} IME.");
                 }
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.FullscreenStateChanged:
@@ -295,6 +274,12 @@ public class ServoUnityController : MonoBehaviour
                         default:
                             break;
                     }
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.HistoryChanged:
+                {
+                    Debug.Log($"Servo browser event: history changed, {(eventData1 == 1 ? "can" : "can't")} go back, {(eventData2 == 1 ? "can" : "can't")} go forward.");
+                    if (NavbarController) NavbarController.OnHistoryChanged(eventData1 == 1, eventData2 == 1);
                 }
                 break;
             default:

@@ -26,6 +26,7 @@
 #include "servo_unity_log.h"
 #include "utils.h"
 
+
 void ServoUnityWindowGL::initDevice() {
 #ifdef _WIN32
 	gl3wInit();
@@ -262,16 +263,16 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
     while (true) {
         std::function<void()> task;
         {
-            std::lock_guard<std::mutex> lock(m_tasksLock);
-            if (m_tasks.empty()) {
+            std::lock_guard<std::mutex> lock(m_servoTasksLock);
+            if (m_servoTasks.empty()) {
                 break;
             } else {
-                task = m_tasks.front();
-                m_tasks.pop_front();
+                task = m_servoTasks.front();
+                m_servoTasks.pop_front();
             }
         }
         task();
-    };
+    }
 
 #ifdef __APPLE__
     CGLSetCurrentContext(glContextUnity);
@@ -290,15 +291,39 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
 
 void ServoUnityWindowGL::cleanupRenderer(void) {
     if (!m_servoGLInited) return;
-    std::lock_guard<std::mutex> lock(m_tasksLock);
-    m_tasks.clear();
+    std::lock_guard<std::mutex> lock(m_servoTasksLock);
+    m_servoTasks.clear();
     deinit();
     s_servo = nullptr;
     m_servoGLInited = false;
 }
+
 void ServoUnityWindowGL::runOnServoThread(std::function<void()> task) {
-    std::lock_guard<std::mutex> lock(m_tasksLock);
-    m_tasks.push_back(task);
+    std::lock_guard<std::mutex> lock(m_servoTasksLock);
+    m_servoTasks.push_back(task);
+}
+
+void ServoUnityWindowGL::queueBrowserEventCallbackTask(int uidExt, int eventType, int eventData1, int eventData2) {
+    std::lock_guard<std::mutex> lock(m_browserEventCallbackTasksLock);
+    BROWSEREVENTCALLBACKTASK task = {uidExt, eventType, eventData1, eventData2};
+    m_browserEventCallbackTasks.push_back(task);
+}
+
+void ServoUnityWindowGL::serviceWindowEvents() {
+    // Service task queue.
+    while (true) {
+        BROWSEREVENTCALLBACKTASK task;
+        {
+            std::lock_guard<std::mutex> lock(m_browserEventCallbackTasksLock);
+            if (m_browserEventCallbackTasks.empty()) {
+                break;
+            } else {
+                task = m_browserEventCallbackTasks.front();
+                m_browserEventCallbackTasks.pop_front();
+            }
+        }
+        if (m_browserEventCallback) (*m_browserEventCallback)(task.uidExt, task.eventType, task.eventData1, task.eventData2);
+    }
 }
 
 void ServoUnityWindowGL::pointerEnter() {
@@ -375,15 +400,15 @@ void ServoUnityWindowGL::keyPress(int charCode) {
 void ServoUnityWindowGL::on_load_started(void)
 {
     SERVOUNITYLOGi("servo callback on_load_started\n");
-    if (!s_servo || !s_servo->m_browserEventCallback) return;
-    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 1, 0);
+    if (!s_servo) return;
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 1, 0);
 }
 
 void ServoUnityWindowGL::on_load_ended(void)
 {
     SERVOUNITYLOGi("servo callback on_load_ended\n");
-    if (!s_servo || !s_servo->m_browserEventCallback) return;
-    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 0, 0);
+    if (!s_servo) return;
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 0, 0);
 }
 
 void ServoUnityWindowGL::on_title_changed(const char *title)
@@ -405,6 +430,8 @@ void ServoUnityWindowGL::on_url_changed(const char *url)
 void ServoUnityWindowGL::on_history_changed(bool can_go_back, bool can_go_forward)
 {
     SERVOUNITYLOGi("servo callback on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
+    if (!s_servo) return;
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_HistoryChanged, can_go_back ? 1 : 0, can_go_forward ? 1 : 0);
 }
 
 void ServoUnityWindowGL::on_animating_changed(bool animating)
@@ -418,15 +445,15 @@ void ServoUnityWindowGL::on_animating_changed(bool animating)
 void ServoUnityWindowGL::on_shutdown_complete(void)
 {
     SERVOUNITYLOGi("servo callback on_shutdown_complete\n");
-    if (!s_servo || !s_servo->m_browserEventCallback) return;
-    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0);
+    if (!s_servo) return;
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0);
 }
 
 void ServoUnityWindowGL::on_ime_state_changed(bool show)
 {
     SERVOUNITYLOGi("servo callback get_clipboard_contents\n");
-    if (!s_servo || !s_servo->m_browserEventCallback) return;
-    (*s_servo->m_browserEventCallback)(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, show ? 1 : 0, 0);
+    if (!s_servo) return;
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, show ? 1 : 0, 0);
 }
 
 const char *ServoUnityWindowGL::get_clipboard_contents(void)

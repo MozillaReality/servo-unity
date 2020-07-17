@@ -37,8 +37,11 @@ private:
     PFN_WINDOWRESIZEDCALLBACK m_windowResizedCallback;
     PFN_BROWSEREVENTCALLBACK m_browserEventCallback;
     bool m_servoGLInited;
-    std::deque< std::function<void()> > m_tasks;
-    std::mutex m_tasksLock;
+    std::deque< std::function<void()> > m_servoTasks;
+    std::mutex m_servoTasksLock;
+    typedef struct {int uidExt; int eventType; int eventData1; int eventData2; } BROWSEREVENTCALLBACKTASK;
+    std::deque< BROWSEREVENTCALLBACKTASK > m_browserEventCallbackTasks;
+    std::mutex m_browserEventCallbackTasksLock;
     bool m_updateContinuously;
     bool m_updateOnce;
     std::mutex m_updateLock;
@@ -67,6 +70,7 @@ private:
     static void wakeup(void);
 
     void runOnServoThread(std::function<void()> task);
+    void queueBrowserEventCallbackTask(int uidExt, int eventType, int eventData1, int eventData2);
 
 public:
 	static void initDevice();
@@ -81,6 +85,8 @@ public:
 	void setSize(Size size) override;
 	void setNativePtr(void* texPtr) override;
 	void* nativePtr() override;
+
+    void serviceWindowEvents(void) override;
 
 	/// Request an update to the window texture. Must be called from render thread.
 	void requestUpdate(float timeDelta) override;

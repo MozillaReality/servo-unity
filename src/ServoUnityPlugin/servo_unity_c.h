@@ -126,7 +126,8 @@ enum {
     ServoUnityBrowserEvent_Shutdown = 1,
     ServoUnityBrowserEvent_LoadStateChanged = 2, // eventData1: 0=LoadEnded, 1=LoadStarted,
     ServoUnityBrowserEvent_FullscreenStateChanged = 3, // eventData1: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
-    ServoUnityBrowserEvent_IMEStateChanged = 4 // eventData1: 0=HideIME, 1=ShowIME
+    ServoUnityBrowserEvent_IMEStateChanged = 4, // eventData1: 0=HideIME, 1=ShowIME
+    ServoUnityBrowserEvent_HistoryChanged = 5 // eventData1: 0=CantGoBack, 1=CanGoBack, eventData2: 0=CantGoForward, 1=CanGoForward
 };
 
 //
@@ -202,6 +203,8 @@ SERVO_UNITY_EXTERN bool servoUnityRequestWindowSizeChange(int windowIndex, int w
 SERVO_UNITY_EXTERN bool servoUnityCloseWindow(int windowIndex);
 
 SERVO_UNITY_EXTERN bool servoUnityCloseAllWindows(void);
+
+SERVO_UNITY_EXTERN void servoUnityServiceWindowEvents(int windowIndex);
 
 ///
 /// Must be called from rendering thread with active rendering context.

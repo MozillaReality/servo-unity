@@ -83,6 +83,9 @@ public static class ServoUnityPlugin_pinvoke
     [return: MarshalAsAttribute(UnmanagedType.I1)]
     public static extern bool servoUnityCloseAllWindows();
 
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnityServiceWindowEvents(int windowIndex);
+
     ///
     /// Must be called from rendering thread with active rendering context.
     /// As an alternative to invoking directly, an equivalent invocation can be invoked via call this sequence:
