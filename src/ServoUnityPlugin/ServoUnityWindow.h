@@ -13,6 +13,7 @@
 #pragma once
 
 #include "servo_unity_c.h"
+#include <string>
 
 class ServoUnityWindow
 {
@@ -52,6 +53,8 @@ public:
 	virtual void setNativePtr(void* texPtr) = 0;
 	virtual void* nativePtr() = 0;
     virtual void serviceWindowEvents(void) = 0;
+    virtual std::string windowTitle(void) = 0;
+    virtual std::string windowURL(void) = 0;
 	virtual void requestUpdate(float timeDelta) = 0;
     virtual void cleanupRenderer() = 0;
 	
@@ -63,6 +66,7 @@ public:
 	virtual void pointerRelease(int button, int x, int y) = 0;
 	virtual void pointerClick(int button, int x, int y) = 0;
     virtual void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) = 0; // x and y are a discrete scroll count, e.g. count of mousewheel "clicks".
-	virtual void keyPress(int charCode) = 0;
+	virtual void keyDown(int charCode) = 0;
+    virtual void keyUp(int charCode) = 0;
 };
 

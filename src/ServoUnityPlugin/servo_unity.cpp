@@ -236,13 +236,14 @@ void servoUnityFinalise(void)
 	m_browserEventCallback = nullptr;
 }
 
-void servoUnityKeyEvent(int windowIndex, int keyCode)
+void servoUnityKeyEvent(int windowIndex, int upDown, int keyCode)
 {
 	SERVOUNITYLOGd("Got keyCode %d.\n", keyCode);
 
 	auto window_iter = s_windows.find(windowIndex);
 	if (window_iter != s_windows.end()) {
-		window_iter->second->keyPress(keyCode);
+        if (upDown == 1) window_iter->second->keyDown(keyCode);
+        else window_iter->second->keyUp(keyCode);
 	}
 }
 
@@ -411,10 +412,29 @@ void servoUnityServiceWindowEvents(int windowIndex)
 {
     auto window_iter = s_windows.find(windowIndex);
     if (window_iter == s_windows.end()) {
-        SERVOUNITYLOGe("Requested update for non-existent window with index %d.\n", windowIndex);
+        SERVOUNITYLOGe("Requested event service for non-existent window with index %d.\n", windowIndex);
         return;
     }
     window_iter->second->serviceWindowEvents();
+}
+
+void servoUnityGetWindowMetadata(int windowIndex, char *titleBuf, int titleBufLen, char *urlBuf, int urlBufLen)
+{
+    auto window_iter = s_windows.find(windowIndex);
+    if (window_iter == s_windows.end()) {
+        SERVOUNITYLOGe("Requested window metadata for non-existent window with index %d.\n", windowIndex);
+        return;
+    }
+    if (titleBuf && titleBufLen > 0) {
+        std::string title = window_iter->second->windowTitle();
+        strncpy(titleBuf, title.c_str(), titleBufLen - 1);
+        titleBuf[titleBufLen - 1] = '\0';  // Guarantee nul-termination, even if truncated.
+    }
+    if (urlBuf && urlBufLen > 0) {
+        std::string URL = window_iter->second->windowURL();
+        strncpy(urlBuf, URL.c_str(), urlBufLen - 1);
+        urlBuf[urlBufLen - 1] = '\0';  // Guarantee nul-termination, even if truncated.
+    }
 }
 
 void servoUnityRequestWindowUpdate(int windowIndex, float timeDelta)
@@ -431,7 +451,7 @@ void servoUnityCleanupRenderer(int windowIndex)
 {
     auto window_iter = s_windows.find(windowIndex);
     if (window_iter == s_windows.end()) {
-        SERVOUNITYLOGe("Requested update for non-existent window with index %d.\n", windowIndex);
+        SERVOUNITYLOGe("Requested cleanup for non-existent window with index %d.\n", windowIndex);
         return;
     }
     window_iter->second->cleanupRenderer();

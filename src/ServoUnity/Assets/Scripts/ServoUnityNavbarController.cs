@@ -13,11 +13,13 @@ using UnityEngine.UI;
 public class ServoUnityNavbarController : MonoBehaviour
 {
     [HideInInspector] public ServoUnityController suc = null;
-    public Button backButton;
-    public Button forwardButton;
-    public Button stopButton;
-    public Button reloadButton;
-    public Button homeButton;
+    public Button BackButton;
+    public Button ForwardButton;
+    public Button StopButton;
+    public Button ReloadButton;
+    public Button HomeButton;
+    public Text TitleText;
+    public Text URLTextField;
 
     void Awake()
     {
@@ -26,21 +28,32 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     void Start()
     {
-        stopButton.gameObject.SetActive(false);
-        reloadButton.gameObject.SetActive(true);
-        backButton.interactable = false;
-        forwardButton.interactable = false;
+        StopButton.gameObject.SetActive(false);
+        ReloadButton.gameObject.SetActive(true);
+        BackButton.interactable = false;
+        ForwardButton.interactable = false;
     }
 
     public void OnLoadStateChanged(bool started)
     {
-        stopButton.gameObject.SetActive(started);
-        reloadButton.gameObject.SetActive(!started);
+        StopButton.gameObject.SetActive(started);
+        ReloadButton.gameObject.SetActive(!started);
     }
 
     public void OnHistoryChanged(bool canGoBack, bool canGoForward)
     {
-        backButton.interactable = canGoBack;
-        forwardButton.interactable = canGoForward;
+        BackButton.interactable = canGoBack;
+        ForwardButton.interactable = canGoForward;
     }
+
+    public void OnTitleChanged(string title)
+    {
+        TitleText.text = title;
+    }
+
+    public void OnURLChanged(string URL)
+    {
+        URLTextField.text = URL;
+    }
+
 }

@@ -57,7 +57,9 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
     m_browserEventCallback(nullptr),
     m_servoGLInited(false),
     m_updateContinuously(false),
-    m_updateOnce(false)
+    m_updateOnce(false),
+    m_title(std::string()),
+    m_URL(std::string())
 {
 }
 
@@ -326,6 +328,16 @@ void ServoUnityWindowGL::serviceWindowEvents() {
     }
 }
 
+std::string ServoUnityWindowGL::windowTitle(void)
+{
+    return m_title;
+}
+
+std::string ServoUnityWindowGL::windowURL(void)
+{
+    return m_URL;
+}
+
 void ServoUnityWindowGL::pointerEnter() {
 	SERVOUNITYLOGd("ServoUnityWindowGL::pointerEnter()\n");
 }
@@ -384,8 +396,16 @@ void ServoUnityWindowGL::pointerScrollDiscrete(int x_scroll, int y_scroll, int x
     runOnServoThread([=] {scroll(x_scroll, y_scroll, x, y);});
 }
 
-void ServoUnityWindowGL::keyPress(int charCode) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::keyPress(%d)\n", charCode);
+void ServoUnityWindowGL::keyDown(int charCode) {
+	SERVOUNITYLOGi("ServoUnityWindowGL::keyDown(%d)\n", charCode);
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {key_down(charCode, CKeyType::kCharacter);});
+}
+
+void ServoUnityWindowGL::keyUp(int charCode) {
+    SERVOUNITYLOGi("ServoUnityWindowGL::keyUp(%d)\n", charCode);
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {key_up(charCode, CKeyType::kCharacter);});
 }
 
 //
@@ -399,21 +419,24 @@ void ServoUnityWindowGL::keyPress(int charCode) {
 
 void ServoUnityWindowGL::on_load_started(void)
 {
-    SERVOUNITYLOGi("servo callback on_load_started\n");
+    SERVOUNITYLOGd("servo callback on_load_started\n");
     if (!s_servo) return;
     s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 1, 0);
 }
 
 void ServoUnityWindowGL::on_load_ended(void)
 {
-    SERVOUNITYLOGi("servo callback on_load_ended\n");
+    SERVOUNITYLOGd("servo callback on_load_ended\n");
     if (!s_servo) return;
     s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_LoadStateChanged, 0, 0);
 }
 
 void ServoUnityWindowGL::on_title_changed(const char *title)
 {
-    SERVOUNITYLOGi("servo callback on_title_changed: %s\n", title);
+    SERVOUNITYLOGd("servo callback on_title_changed: %s\n", title);
+    if (!s_servo) return;
+    s_servo->m_title = std::string(title);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_TitleChanged, 0, 0);
 }
 
 bool ServoUnityWindowGL::on_allow_navigation(const char *url)
@@ -424,19 +447,22 @@ bool ServoUnityWindowGL::on_allow_navigation(const char *url)
 
 void ServoUnityWindowGL::on_url_changed(const char *url)
 {
-    SERVOUNITYLOGi("servo callback on_url_changed: %s\n", url);
+    SERVOUNITYLOGd("servo callback on_url_changed: %s\n", url);
+    if (!s_servo) return;
+    s_servo->m_URL = std::string(url);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_URLChanged, 0, 0);
 }
 
 void ServoUnityWindowGL::on_history_changed(bool can_go_back, bool can_go_forward)
 {
-    SERVOUNITYLOGi("servo callback on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
+    SERVOUNITYLOGd("servo callback on_history_changed: can_go_back:%s, can_go_forward:%s\n", can_go_back ? "true" : "false", can_go_forward ? "true" : "false");
     if (!s_servo) return;
     s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_HistoryChanged, can_go_back ? 1 : 0, can_go_forward ? 1 : 0);
 }
 
 void ServoUnityWindowGL::on_animating_changed(bool animating)
 {
-    SERVOUNITYLOGi("servo callback on_animating_changed(%s)\n", animating ? "true" : "false");
+    SERVOUNITYLOGd("servo callback on_animating_changed(%s)\n", animating ? "true" : "false");
     if (!s_servo) return;
     std::lock_guard<std::mutex> lock(s_servo->m_updateLock);
     s_servo->m_updateContinuously = animating;

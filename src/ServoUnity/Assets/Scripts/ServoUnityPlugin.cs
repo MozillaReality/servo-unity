@@ -71,7 +71,7 @@ public class ServoUnityPlugin
 
     public string ServoUnityGetVersion()
     {
-        StringBuilder sb = new StringBuilder(128);
+        var sb = new StringBuilder(128);
         bool ok = ServoUnityPlugin_pinvoke.servoUnityGetVersion(sb, sb.Capacity);
         if (ok) return sb.ToString();
         else return "";
@@ -109,9 +109,9 @@ public class ServoUnityPlugin
         ServoUnityPlugin_pinvoke.servoUnitySetResourcesPath(path);
     }
 
-    public void ServoUnityKeyEvent(int windowIndex, int keyCode)
+    public void ServoUnityKeyEvent(int windowIndex, int upDown, int keyCode)
     {
-        ServoUnityPlugin_pinvoke.servoUnityKeyEvent(windowIndex, keyCode);
+        ServoUnityPlugin_pinvoke.servoUnityKeyEvent(windowIndex, upDown, keyCode);
     }
 
     public int ServoUnityGetWindowCount()
@@ -189,6 +189,21 @@ public class ServoUnityPlugin
         GL.InvalidateState();
     }
 
+
+    public string ServoUnityGetWindowTitle(int windowIndex)
+    {
+        var sb = new StringBuilder(1024); // 1kb
+        ServoUnityPlugin_pinvoke.servoUnityGetWindowMetadata(windowIndex, sb, sb.Capacity, null, 0);
+        return sb.ToString();
+    }
+
+    public string ServoUnityGetWindowURL(int windowIndex)
+    {
+        var sb = new StringBuilder(16384); // 16kb
+        ServoUnityPlugin_pinvoke.servoUnityGetWindowMetadata(windowIndex, null, 0, sb, sb.Capacity);
+        return sb.ToString();
+    }
+
     public void ServoUnityCleanupRenderer(int windowIndex)
     {
         // Rather than calling ServoUnityPlugin_pinvoke.servoUnityCleanupRenderer(windowIndex)
@@ -229,7 +244,9 @@ public class ServoUnityPlugin
         FullscreenStateChanged = 3, // eventData1: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
         IMEStateChanged = 4, // eventData1: 0=HideIME, 1=ShowIME
         HistoryChanged = 5, // eventData1: 0=CantGoBack, 1=CanGoBack, eventData1: 0=CantGoForward, 1=CanGoForward
-        Total = 6
+        TitleChanged = 6,
+        URLChanged = 7,
+        Total = 8
     };
 
     public bool ServoUnityCloseWindow(int windowIndex)

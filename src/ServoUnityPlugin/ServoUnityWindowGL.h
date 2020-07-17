@@ -45,6 +45,8 @@ private:
     bool m_updateContinuously;
     bool m_updateOnce;
     std::mutex m_updateLock;
+    std::string m_title;
+    std::string m_URL;
 
     static void on_load_started(void);
     static void on_load_ended(void);
@@ -87,6 +89,8 @@ public:
 	void* nativePtr() override;
 
     void serviceWindowEvents(void) override;
+    std::string windowTitle(void) override;
+    std::string windowURL(void) override;
 
 	/// Request an update to the window texture. Must be called from render thread.
 	void requestUpdate(float timeDelta) override;
@@ -104,7 +108,8 @@ public:
     void pointerClick(int button, int x, int y) override;
     void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) override;
 
-	void keyPress(int charCode) override;
+	void keyDown(int charCode) override;
+    void keyUp(int charCode) override;
 };
 
 #endif // SUPPORT_OPENGL_CORE

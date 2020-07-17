@@ -127,7 +127,10 @@ enum {
     ServoUnityBrowserEvent_LoadStateChanged = 2, // eventData1: 0=LoadEnded, 1=LoadStarted,
     ServoUnityBrowserEvent_FullscreenStateChanged = 3, // eventData1: 0=WillEnterFullscreen, 1=DidEnterFullscreen, 2=WillExitFullscreen, 3=DidExitFullscreen,
     ServoUnityBrowserEvent_IMEStateChanged = 4, // eventData1: 0=HideIME, 1=ShowIME
-    ServoUnityBrowserEvent_HistoryChanged = 5 // eventData1: 0=CantGoBack, 1=CanGoBack, eventData2: 0=CantGoForward, 1=CanGoForward
+    ServoUnityBrowserEvent_HistoryChanged = 5, // eventData1: 0=CantGoBack, 1=CanGoBack, eventData2: 0=CantGoForward, 1=CanGoForward
+    ServoUnityBrowserEvent_TitleChanged = 6,
+    ServoUnityBrowserEvent_URLChanged = 6,
+    Total = 8
 };
 
 //
@@ -182,7 +185,8 @@ SERVO_UNITY_EXTERN void servoUnityFinalise(void);
 ///
 SERVO_UNITY_EXTERN void servoUnitySetResourcesPath(const char *path);
 
-SERVO_UNITY_EXTERN void servoUnityKeyEvent(int windowIndex, int keyCode);
+/// @param upDown Set to 1 for keyDown events, 0 for keyUp events.
+SERVO_UNITY_EXTERN void servoUnityKeyEvent(int windowIndex, int upDown, int keyCode);
 
 SERVO_UNITY_EXTERN int servoUnityGetWindowCount(void);
 
@@ -205,6 +209,9 @@ SERVO_UNITY_EXTERN bool servoUnityCloseWindow(int windowIndex);
 SERVO_UNITY_EXTERN bool servoUnityCloseAllWindows(void);
 
 SERVO_UNITY_EXTERN void servoUnityServiceWindowEvents(int windowIndex);
+
+SERVO_UNITY_EXTERN void servoUnityGetWindowMetadata(int windowIndex, char *titleBuf, int titleBufLen, char *urlBuf, int urlBufLen);
+
 
 ///
 /// Must be called from rendering thread with active rendering context.

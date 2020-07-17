@@ -22,6 +22,28 @@ typedef enum {
 } CDevtoolsServerState;
 
 typedef enum {
+  kNone,
+  kCharacter,
+  kBackspace,
+  kDelete,
+  kEscape,
+  kShift,
+  kControl,
+  kOptionAlt,
+  kCommandWindows,
+  kEnter,
+  kTab,
+  kUpArrow,
+  kDownArrow,
+  kLeftArrow,
+  kRightArrow,
+  kHome,
+  kEnd,
+  kPageUp,
+  kPageDown,
+} CKeyType;
+
+typedef enum {
   Play = 1,
   Pause,
   SeekBackward,
@@ -142,6 +164,10 @@ void init_with_egl(CInitOptions opts, void (*wakeup)(void), CHostCallbacks callb
 void init_with_gl(CInitOptions opts, void (*wakeup)(void), CHostCallbacks callbacks);
 
 bool is_uri_valid(const char *url);
+
+void key_down(uint32_t key_code, CKeyType key_type);
+
+void key_up(uint32_t key_code, CKeyType key_type);
 
 bool load_uri(const char *url);
 

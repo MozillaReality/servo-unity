@@ -44,7 +44,7 @@ public class ServoUnityWindow : ServoUnityPointableSurface
 
     public static ServoUnityWindow FindWindowWithUID(int uid)
     {
-        Debug.Log("ServoUnityWindow.FindWindowWithUID(uid:" + uid + ")");
+        //Debug.Log("ServoUnityWindow.FindWindowWithUID(uid:" + uid + ")");
         if (uid != 0)
         {
             ServoUnityWindow[] windows = GameObject.FindObjectsOfType<ServoUnityWindow>();
@@ -102,12 +102,6 @@ public class ServoUnityWindow : ServoUnityPointableSurface
 
     private void HandleCloseKeyPressed()
     {
-    }
-
-    private void HandleKeyPressed(int keycode)
-    {
-        // TODO: All windows will respond to all keyboard presses. Since we only ever have one at the moment...
-        servo_unity_plugin.ServoUnityKeyEvent(_windowIndex, keycode);
     }
 
     void Start()

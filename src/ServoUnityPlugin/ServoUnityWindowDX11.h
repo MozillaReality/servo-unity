@@ -54,6 +54,8 @@ public:
 	void* nativePtr() override;
 
     void serviceWindowEvents(void) override {}
+    std::string windowTitle(void) override {return std::string();}
+    std::string windowURL(void) override {return std::string();}
 
 	// Must be called from render thread.
 	void requestUpdate(float timeDelta) override;
@@ -68,7 +70,8 @@ public:
 	void pointerRelease(int button, int x, int y) override;
 	void pointerClick(int button, int x, int y) override;
     void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) override;
-	void keyPress(int charCode) override;
+	void keyDown(int charCode) override;
+    void keyUp(int charCode) override;
 };
 
 #endif // SUPPORT_D3D11

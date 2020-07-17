@@ -70,6 +70,11 @@ public class ServoUnityController : MonoBehaviour
 
     public ServoUnityNavbarController NavbarController = null;
 
+    public string Homepage = "https://mozilla.org/";
+
+    private bool IMEActive = false;
+    private int IMEWindowIndex = 0;
+
     //
     // MonoBehavior methods.
     //
@@ -86,17 +91,6 @@ public class ServoUnityController : MonoBehaviour
         if (msg.StartsWith("[error]", StringComparison.Ordinal)) Debug.LogError(msg);
         else if (msg.StartsWith("[warning]", StringComparison.Ordinal)) Debug.LogWarning(msg);
         else Debug.Log(msg); // includes [info] and [debug].
-    }
-
-    public void SendKeyEvent(int keycode)
-    {
-        // TODO: Introduce concept of "focused" window, once we allow more than one, so these events can be sent to the window that has focus 
-        ServoUnityWindow[] servoUnityWindows = FindObjectsOfType<ServoUnityWindow>();
-
-        if (servoUnityWindows.Length > 0)
-        {
-            servo_unity_plugin.ServoUnityKeyEvent(servoUnityWindows[0].WindowIndex, keycode);
-        }
     }
 
     void OnEnable()
@@ -154,13 +148,6 @@ public class ServoUnityController : MonoBehaviour
         Debug.Log("ServoUnityController.HandleFullScreenBegin(" + pixelwidth + ", " + pixelheight + ", " + format + ", " + projection + ")");
     }
 
-    public void UserExitFullScreenVideo()
-    {
-        // Notify plugin we are closing video by sending escape key
-        SendKeyEvent(0x1b);
-        HandleFullScreenEnd();
-    }
-
     private void HandleFullScreenEnd()
     {
         Debug.Log("ServoUnityController.HandleFullScreenEnd()");
@@ -211,6 +198,22 @@ public class ServoUnityController : MonoBehaviour
         servo_unity_plugin.ServoUnityInit(OnServoWindowCreated, OnServoWindowResized, OnServoBrowserEvent);
     }
 
+    void OnGUI()
+    {
+        if (IMEActive)
+        {
+            Event e = Event.current;
+            if (e.type == EventType.KeyDown && e.character != 0)
+            {
+                servo_unity_plugin.ServoUnityKeyEvent(IMEWindowIndex, 1, e.character);
+            }
+            else if (e.type == EventType.KeyUp && e.character != 0)
+            {
+                servo_unity_plugin.ServoUnityKeyEvent(IMEWindowIndex, 0, e.character);
+            }
+        }
+    }
+
     void Update()
     {
         servo_unity_plugin.ServoUnityFlushLog();
@@ -232,6 +235,13 @@ public class ServoUnityController : MonoBehaviour
     [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginBrowserEventCallback))]
     void OnServoBrowserEvent(int uid, int eventType, int eventData1, int eventData2)
     {
+        ServoUnityWindow window = ServoUnityWindow.FindWindowWithUID(uid);
+        if (window == null)
+        {
+            Debug.LogError("ServoUnityController.OnServoBrowserEvent: Received event for a window that doesn't exist.");
+            return;
+        }
+
         switch ((ServoUnityPlugin.ServoUnityBrowserEventType)eventType)
         {
             case ServoUnityPlugin.ServoUnityBrowserEventType.NOP:
@@ -249,6 +259,8 @@ public class ServoUnityController : MonoBehaviour
             case ServoUnityPlugin.ServoUnityBrowserEventType.IMEStateChanged:
                 {
                     Debug.Log($"Servo browser event: {(eventData1 == 1 ? "show" : "hide")} IME.");
+                    IMEActive = (eventData1 == 1);
+                    IMEWindowIndex = window.WindowIndex;
                 }
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.FullscreenStateChanged:
@@ -280,6 +292,18 @@ public class ServoUnityController : MonoBehaviour
                 {
                     Debug.Log($"Servo browser event: history changed, {(eventData1 == 1 ? "can" : "can't")} go back, {(eventData2 == 1 ? "can" : "can't")} go forward.");
                     if (NavbarController) NavbarController.OnHistoryChanged(eventData1 == 1, eventData2 == 1);
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.TitleChanged:
+                {
+                    Debug.Log("Servo browser event: title changed.");
+                    if (NavbarController) NavbarController.OnTitleChanged(servo_unity_plugin.ServoUnityGetWindowTitle(window.WindowIndex));
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.URLChanged:
+                {
+                    Debug.Log("Servo browser event: URL changed.");
+                    if (NavbarController) NavbarController.OnURLChanged(servo_unity_plugin.ServoUnityGetWindowURL(window.WindowIndex));
                 }
                 break;
             default:

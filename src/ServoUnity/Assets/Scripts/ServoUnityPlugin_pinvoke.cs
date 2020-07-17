@@ -52,7 +52,7 @@ public static class ServoUnityPlugin_pinvoke
     public static extern void servoUnitySetResourcesPath(string path);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
-    public static extern void servoUnityKeyEvent(int windowIndex, int keyCode);
+    public static extern void servoUnityKeyEvent(int windowIndex, int upDown, int keyCode);
     
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, int windowX, int windowY);
@@ -85,6 +85,9 @@ public static class ServoUnityPlugin_pinvoke
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern void servoUnityServiceWindowEvents(int windowIndex);
+
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnityGetWindowMetadata(int windowIndex, [MarshalAs(UnmanagedType.LPStr)] StringBuilder titleBuf, int titleBufLen, [MarshalAs(UnmanagedType.LPStr)] StringBuilder urlBuf, int urlBufLen);
 
     ///
     /// Must be called from rendering thread with active rendering context.
