@@ -202,7 +202,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 280746329}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1616519484}
+        m_MethodName: OnReloadPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &280746329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,7 +580,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 642516455}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1616519484}
+        m_MethodName: OnForwardPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &642516455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -754,7 +776,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 867960109}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1616519484}
+        m_MethodName: OnHomePressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &867960109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -919,6 +952,7 @@ MonoBehaviour:
   currentLogLevel: 1
   DontCloseNativeWindowOnClose: 0
   NavbarController: {fileID: 1616519484}
+  Homepage: https://mozilla.org/
 --- !u!4 &1060951311
 Transform:
   m_ObjectHideFlags: 0
@@ -1467,7 +1501,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1772980972}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -5.71}
+  m_LocalPosition: {x: 0, y: 1.33, z: -4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1554,7 +1588,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1824808048}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1616519484}
+        m_MethodName: OnBackPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1824808048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1751,7 +1796,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1898032560}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1616519484}
+        m_MethodName: OnStopPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1898032560
 MonoBehaviour:
   m_ObjectHideFlags: 0

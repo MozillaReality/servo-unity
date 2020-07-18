@@ -314,6 +314,23 @@ public class ServoUnityPlugin
         ServoUnityPlugin_pinvoke.servoUnityWindowPointerEvent(windowIndex, (int) eventID, eventParam0, eventParam1, windowX, windowY);
     }
 
+    public enum ServoUnityWindowBrowserControlEventID
+    {
+        Refresh = 0,
+        Reload = 1,
+        Stop = 2,
+        GoBack = 3,
+        GoForward = 4,
+        GoHome = 5,
+        Navigate = 6,
+        Total = 7,
+    };
+
+    public void ServoUnityWindowBrowserControlEvent(int windowIndex, ServoUnityWindowBrowserControlEventID eventID, int eventParam0, int eventParam1, string eventParamS)
+    {
+        ServoUnityPlugin_pinvoke.servoUnityWindowBrowserControlEvent(windowIndex, (int)eventID, eventParam0, eventParam1, eventParamS);
+    }
+
     public enum ServoUnityBrowserEventType
     {
         NOP = 0,

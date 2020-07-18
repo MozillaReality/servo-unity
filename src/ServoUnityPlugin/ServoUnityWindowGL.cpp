@@ -483,6 +483,76 @@ void ServoUnityWindowGL::keyEvent(int upDown, int keyCode, int character) {
     else runOnServoThread([=] {key_up(kc, kt);});
 }
 
+void ServoUnityWindowGL::refresh()
+{
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {::refresh();});
+}
+
+void ServoUnityWindowGL::reload()
+{
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {::reload();});
+}
+
+void ServoUnityWindowGL::stop()
+{
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {::stop();});
+}
+
+void ServoUnityWindowGL::goBack()
+{
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {go_back();});
+}
+
+void ServoUnityWindowGL::goForward()
+{
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {go_forward();});
+}
+
+void ServoUnityWindowGL::goHome()
+{
+    if (!m_servoGLInited) return;
+    // TODO: fetch the homepage from prefs.
+    runOnServoThread([=] {
+        if (is_uri_valid(HOMEPAGE)) {
+            load_uri(HOMEPAGE);
+        };
+    });
+}
+
+void ServoUnityWindowGL::navigate(const std::string& urlOrSearchString)
+{
+    if (!m_servoGLInited) return;
+    runOnServoThread([=] {
+        if (is_uri_valid(urlOrSearchString.c_str())) {
+            load_uri(urlOrSearchString.c_str());
+        } else {
+            std::string uri;
+            // It's not a valid URI, but might be a domain name without method.
+            // Look for bare minimum of a '.'' before any '/'.
+            size_t dotPos = urlOrSearchString.find('.');
+            size_t slashPos = urlOrSearchString.find('/');
+            if (dotPos != std::string::npos && (slashPos == std::string::npos || slashPos > dotPos)) {
+                std::string withMethod = std::string("https://" + urlOrSearchString);
+                if (is_uri_valid(withMethod.c_str())) {
+                    uri = withMethod;
+                } else {
+                    uri = std::string(SEARCH_URI) + urlOrSearchString;
+                }
+            } else {
+                uri = std::string(SEARCH_URI) + urlOrSearchString;
+            }
+            if (is_uri_valid(uri.c_str())) {
+                load_uri(urlOrSearchString.c_str());
+            }
+        }
+    });
+}
+
 //
 // Callback implementations. These are all necesarily static, so have to fetch the active instance
 // via the static instance pointer s_servo.
@@ -661,5 +731,6 @@ void ServoUnityWindowGL::wakeup(void)
     std::lock_guard<std::mutex> lock(s_servo->m_updateLock);
     s_servo->m_updateOnce = true;
 }
+
 
 #endif // SUPPORT_OPENGL_CORE

@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 public class ServoUnityNavbarController : MonoBehaviour
 {
-    [HideInInspector] public ServoUnityController suc = null;
+    private ServoUnityController suc = null;
     public Button BackButton;
     public Button ForwardButton;
     public Button StopButton;
@@ -23,7 +23,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     void Awake()
     {
-        suc = GetComponent<ServoUnityController>();
+        suc = FindObjectOfType<ServoUnityController>();
     }
 
     void Start()
@@ -54,6 +54,45 @@ public class ServoUnityNavbarController : MonoBehaviour
     public void OnURLChanged(string URL)
     {
         URLTextField.text = URL;
+    }
+
+    public void OnBackPressed()
+    {
+        if (suc && suc.NavbarWindow) {
+            suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.GoBack, 0, 0, null);
+        }
+    }
+
+    public void OnForwardPressed()
+    {
+        if (suc && suc.NavbarWindow)
+        {
+            suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.GoForward, 0, 0, null);
+        }
+    }
+
+    public void OnStopPressed()
+    {
+        if (suc && suc.NavbarWindow)
+        {
+            suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.Stop, 0, 0, null);
+        }
+    }
+
+    public void OnReloadPressed()
+    {
+        if (suc && suc.NavbarWindow)
+        {
+            suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.Reload, 0, 0, null);
+        }
+    }
+
+    public void OnHomePressed()
+    {
+        if (suc && suc.NavbarWindow)
+        {
+            suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.GoHome, 0, 0, null);
+        }
     }
 
 }

@@ -58,6 +58,9 @@ public static class ServoUnityPlugin_pinvoke
     public static extern void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, int windowX, int windowY);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnityWindowBrowserControlEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, string eventParamS);
+
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern int servoUnityGetWindowCount();
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]

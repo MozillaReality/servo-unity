@@ -94,6 +94,9 @@
 #  define SERVO_UNITY_CALLBACK
 #endif
 
+#define HOMEPAGE "https://servo.org/"
+#define SEARCH_URI "https://www.google.com/search?client=firefox-b-d&q="
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -330,6 +333,18 @@ enum {
 };
 
 SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventParam0, int eventParam1, int eventID, int windowX, int windowY);
+
+enum {
+    ServoUnityWindowBrowserControlEventID_Refresh = 0,
+    ServoUnityWindowBrowserControlEventID_Reload = 1,
+    ServoUnityWindowBrowserControlEventID_Stop = 2,
+    ServoUnityWindowBrowserControlEventID_GoBack = 3,
+    ServoUnityWindowBrowserControlEventID_GoForward = 4,
+    ServoUnityWindowBrowserControlEventID_GoHome = 5,
+    ServoUnityWindowBrowserControlEventID_Navigate = 6
+};
+
+SERVO_UNITY_EXTERN void servoUnityWindowBrowserControlEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, const char *eventParamS);
 
 enum {
 	ServoUnityParam_b_CloseNativeWindowOnClose = 0,

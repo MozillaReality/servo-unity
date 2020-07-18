@@ -6,7 +6,7 @@
 // Author(s): Philip Lamb
 
 //
-// FxRUtilityFunctions.cs
+// ServoUnityUtilityFunctions.cs
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0.If a copy of the MPL was not distributed with this
@@ -24,7 +24,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public static class FxRUtilityFunctions
+public static class ServoUnityUtilityFunctions
 {
 	/// <summary>
 	/// Creates a Unity matrix from an array of floats.

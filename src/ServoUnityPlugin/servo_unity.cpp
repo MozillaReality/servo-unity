@@ -486,3 +486,33 @@ void servoUnityWindowPointerEvent(int windowIndex, int eventID, int eventParam0,
 	}
 }
 
+void servoUnityWindowBrowserControlEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, const char *eventParamS)
+{
+    auto window_iter = s_windows.find(windowIndex);
+    if (window_iter == s_windows.end()) return;
+
+    switch (eventID) {
+    case ServoUnityWindowBrowserControlEventID_Refresh:
+        window_iter->second->refresh();
+        break;
+    case ServoUnityWindowBrowserControlEventID_Reload:
+        window_iter->second->reload();
+        break;
+    case ServoUnityWindowBrowserControlEventID_Stop:
+        window_iter->second->stop();
+        break;
+    case ServoUnityWindowBrowserControlEventID_GoBack:
+        window_iter->second->goBack();
+        break;
+    case ServoUnityWindowBrowserControlEventID_GoForward:
+        window_iter->second->goForward();
+        break;
+    case ServoUnityWindowBrowserControlEventID_GoHome:
+        window_iter->second->goHome();
+        break;
+    case ServoUnityWindowBrowserControlEventID_Navigate:
+        window_iter->second->navigate(std::string(eventParamS));
+        break;
+    default:
+        break;
+    }}

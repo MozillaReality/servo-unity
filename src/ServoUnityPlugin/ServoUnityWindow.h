@@ -67,5 +67,13 @@ public:
 	virtual void pointerClick(int button, int x, int y) = 0;
     virtual void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) = 0; // x and y are a discrete scroll count, e.g. count of mousewheel "clicks".
 	virtual void keyEvent(int upDown, int keyCode, int character) = 0;
+
+    virtual void refresh() = 0;
+    virtual void reload() = 0;
+    virtual void stop() = 0;
+    virtual void goBack() = 0;
+    virtual void goForward() = 0;
+    virtual void goHome() = 0;
+    virtual void navigate(const std::string& urlOrSearchString) = 0;
 };
 

@@ -68,12 +68,14 @@ public class ServoUnityController : MonoBehaviour
 
     public bool DontCloseNativeWindowOnClose = false;
 
-    public ServoUnityNavbarController NavbarController = null;
+    private ServoUnityNavbarController navbarController = null;
 
     public string Homepage = "https://mozilla.org/";
 
     private bool IMEActive = false;
     private int IMEWindowIndex = 0;
+
+    [NonSerialized] public ServoUnityWindow NavbarWindow = null;
 
     //
     // MonoBehavior methods.
@@ -82,6 +84,7 @@ public class ServoUnityController : MonoBehaviour
     void Awake()
     {
         Debug.Log("ServoUnityController.Awake())");
+        navbarController = FindObjectOfType<ServoUnityNavbarController>();
     }
 
     [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginLogCallback))]
@@ -339,7 +342,7 @@ public class ServoUnityController : MonoBehaviour
             case ServoUnityPlugin.ServoUnityBrowserEventType.LoadStateChanged:
                 {
                     Debug.Log($"Servo browser event: load {(eventData1 == 1 ? "began" : "ended")}.");
-                    if (NavbarController) NavbarController.OnLoadStateChanged(eventData1 == 1);
+                    if (navbarController) navbarController.OnLoadStateChanged(eventData1 == 1);
                 }
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.IMEStateChanged:
@@ -377,19 +380,19 @@ public class ServoUnityController : MonoBehaviour
             case ServoUnityPlugin.ServoUnityBrowserEventType.HistoryChanged:
                 {
                     Debug.Log($"Servo browser event: history changed, {(eventData1 == 1 ? "can" : "can't")} go back, {(eventData2 == 1 ? "can" : "can't")} go forward.");
-                    if (NavbarController) NavbarController.OnHistoryChanged(eventData1 == 1, eventData2 == 1);
+                    if (navbarController) navbarController.OnHistoryChanged(eventData1 == 1, eventData2 == 1);
                 }
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.TitleChanged:
                 {
                     Debug.Log("Servo browser event: title changed.");
-                    if (NavbarController) NavbarController.OnTitleChanged(servo_unity_plugin.ServoUnityGetWindowTitle(window.WindowIndex));
+                    if (navbarController) navbarController.OnTitleChanged(servo_unity_plugin.ServoUnityGetWindowTitle(window.WindowIndex));
                 }
                 break;
             case ServoUnityPlugin.ServoUnityBrowserEventType.URLChanged:
                 {
                     Debug.Log("Servo browser event: URL changed.");
-                    if (NavbarController) NavbarController.OnURLChanged(servo_unity_plugin.ServoUnityGetWindowURL(window.WindowIndex));
+                    if (navbarController) navbarController.OnURLChanged(servo_unity_plugin.ServoUnityGetWindowURL(window.WindowIndex));
                 }
                 break;
             default:
@@ -430,6 +433,7 @@ public class ServoUnityController : MonoBehaviour
         {
             window = ServoUnityWindow.CreateNewInParent(transform.parent.gameObject);
         }
+        NavbarWindow = window; // Switch to newly created window.
 
         /*
          Enum values from Source/ServoUnityPlugin/servo_unity_c.h

@@ -108,6 +108,15 @@ public:
     void pointerClick(int button, int x, int y) override;
     void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) override;
 	void keyEvent(int upDown, int keyCode, int character) override;
+
+    void refresh() override;
+    void reload() override;
+    void stop() override;
+    void goBack() override;
+    void goForward() override;
+    void goHome() override;
+    void navigate(const std::string& urlOrSearchString) override;
+
 };
 
 #endif // SUPPORT_OPENGL_CORE
