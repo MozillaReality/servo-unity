@@ -236,14 +236,11 @@ void servoUnityFinalise(void)
 	m_browserEventCallback = nullptr;
 }
 
-void servoUnityKeyEvent(int windowIndex, int upDown, int keyCode)
+void servoUnityKeyEvent(int windowIndex, int upDown, int keyCode, int character)
 {
-	SERVOUNITYLOGd("Got keyCode %d.\n", keyCode);
-
 	auto window_iter = s_windows.find(windowIndex);
 	if (window_iter != s_windows.end()) {
-        if (upDown == 1) window_iter->second->keyDown(keyCode);
-        else window_iter->second->keyUp(keyCode);
+        window_iter->second->keyEvent(upDown, keyCode, character);
 	}
 }
 

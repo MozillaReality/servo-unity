@@ -107,9 +107,7 @@ public:
 	void pointerRelease(int button, int x, int y) override;
     void pointerClick(int button, int x, int y) override;
     void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) override;
-
-	void keyDown(int charCode) override;
-    void keyUp(int charCode) override;
+	void keyEvent(int upDown, int keyCode, int character) override;
 };
 
 #endif // SUPPORT_OPENGL_CORE

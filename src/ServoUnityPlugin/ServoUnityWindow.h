@@ -66,7 +66,6 @@ public:
 	virtual void pointerRelease(int button, int x, int y) = 0;
 	virtual void pointerClick(int button, int x, int y) = 0;
     virtual void pointerScrollDiscrete(int x_scroll, int y_scroll, int x, int y) = 0; // x and y are a discrete scroll count, e.g. count of mousewheel "clicks".
-	virtual void keyDown(int charCode) = 0;
-    virtual void keyUp(int charCode) = 0;
+	virtual void keyEvent(int upDown, int keyCode, int character) = 0;
 };
 

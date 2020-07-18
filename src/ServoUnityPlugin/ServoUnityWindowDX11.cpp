@@ -179,42 +179,4 @@ void ServoUnityWindowDX11::pointerScrollDiscrete(int x_scroll, int y_scroll, int
 	SERVOUNITYLOGd("ServoUnityWindowDX11::pointerScrollDiscrete(%d, %d, %d, %d)\n", x_scroll, y_scroll, x, y);
 }
 
-void ServoUnityWindowDX11::keyDown(int charCode) {
-    SERVOUNITYLOGd("ServoUnityWindowDX11::keyDown(%d)\n", charCode);
-	switch (charCode) {
-		case VK_BACK:
-		case VK_TAB:
-		case VK_RETURN:
-		case VK_ESCAPE:
-		case VK_SPACE:
-		case VK_LEFT:
-		case VK_RIGHT:
-		case VK_DOWN:
-		case VK_UP:
-		case VK_HOME:
-		case VK_END:
-			break;
-		default:
-	}
-}
-
-void ServoUnityWindowDX11::keyUp(int charCode) {
-    SERVOUNITYLOGd("ServoUnityWindowDX11::keyUp(%d)\n", charCode);
-    switch (charCode) {
-        case VK_BACK:
-        case VK_TAB:
-        case VK_RETURN:
-        case VK_ESCAPE:
-        case VK_SPACE:
-        case VK_LEFT:
-        case VK_RIGHT:
-        case VK_DOWN:
-        case VK_UP:
-        case VK_HOME:
-        case VK_END:
-            break;
-        default:
-    }
-}
-
 #endif // SUPPORT_D3D11

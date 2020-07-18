@@ -396,16 +396,91 @@ void ServoUnityWindowGL::pointerScrollDiscrete(int x_scroll, int y_scroll, int x
     runOnServoThread([=] {scroll(x_scroll, y_scroll, x, y);});
 }
 
-void ServoUnityWindowGL::keyDown(int charCode) {
-	SERVOUNITYLOGi("ServoUnityWindowGL::keyDown(%d)\n", charCode);
+void ServoUnityWindowGL::keyEvent(int upDown, int keyCode, int character) {
+	SERVOUNITYLOGd("ServoUnityWindowGL::keyEvent(%d, %d, %d)\n", upDown, keyCode, character);
     if (!m_servoGLInited) return;
-    runOnServoThread([=] {key_down(charCode, CKeyType::kCharacter);});
-}
+    int kc = character;
+    CKeyType kt;
+    switch (keyCode) {
+        //case ServoUnityKeyCode_Null: kt = CKeyType::kNull; break;
+        case ServoUnityKeyCode_Character: kt = CKeyType::kCharacter; break;
+        case ServoUnityKeyCode_Backspace: kt = CKeyType::kBackspace; break;
+        case ServoUnityKeyCode_Delete: kt = CKeyType::kDelete; break;
+        case ServoUnityKeyCode_Tab: kt = CKeyType::kTab; break;
+        //case ServoUnityKeyCode_Clear: kt = CKeyType::kClear; break;
+        case ServoUnityKeyCode_Return: kt = CKeyType::kEnter; break;
+        case ServoUnityKeyCode_Pause: kt = CKeyType::kPause; break;
+        case ServoUnityKeyCode_Escape: kt = CKeyType::kEscape; break;
+        case ServoUnityKeyCode_Space: kt = CKeyType::kCharacter; kc = ' '; break;
+        case ServoUnityKeyCode_UpArrow: kt = CKeyType::kUpArrow; break;
+        case ServoUnityKeyCode_DownArrow: kt = CKeyType::kDownArrow; break;
+        case ServoUnityKeyCode_RightArrow: kt = CKeyType::kRightArrow; break;
+        case ServoUnityKeyCode_LeftArrow: kt = CKeyType::kLeftArrow; break;
+        case ServoUnityKeyCode_Insert: kt = CKeyType::kInsert; break;
+        case ServoUnityKeyCode_Home: kt = CKeyType::kHome; break;
+        case ServoUnityKeyCode_End: kt = CKeyType::kEnd; break;
+        case ServoUnityKeyCode_PageUp: kt = CKeyType::kPageUp; break;
+        case ServoUnityKeyCode_PageDown: kt = CKeyType::kPageDown; break;
+        case ServoUnityKeyCode_F1: kt = CKeyType::kF1; break;
+        case ServoUnityKeyCode_F2: kt = CKeyType::kF2; break;
+        case ServoUnityKeyCode_F3: kt = CKeyType::kF3; break;
+        case ServoUnityKeyCode_F4: kt = CKeyType::kF4; break;
+        case ServoUnityKeyCode_F5: kt = CKeyType::kF5; break;
+        case ServoUnityKeyCode_F6: kt = CKeyType::kF6; break;
+        case ServoUnityKeyCode_F7: kt = CKeyType::kF7; break;
+        case ServoUnityKeyCode_F8: kt = CKeyType::kF8; break;
+        case ServoUnityKeyCode_F9: kt = CKeyType::kF9; break;
+        case ServoUnityKeyCode_F10: kt = CKeyType::kF10; break;
+        case ServoUnityKeyCode_F11: kt = CKeyType::kF11; break;
+        case ServoUnityKeyCode_F12: kt = CKeyType::kF12; break;
+        //case ServoUnityKeyCode_F13: kt = CKeyType::kF13; break;
+        //case ServoUnityKeyCode_F14: kt = CKeyType::kF14; break;
+        //case ServoUnityKeyCode_F15: kt = CKeyType::kF15; break;
+        //case ServoUnityKeyCode_F16: kt = CKeyType::kF16; break;
+        //case ServoUnityKeyCode_F17: kt = CKeyType::kF17; break;
+        //case ServoUnityKeyCode_F18: kt = CKeyType::kF18; break;
+        //case ServoUnityKeyCode_F19: kt = CKeyType::kF19; break;
+        case ServoUnityKeyCode_Numlock: kt = CKeyType::kNumLock; break;
+        case ServoUnityKeyCode_CapsLock: kt = CKeyType::kCapsLock; break;
+        case ServoUnityKeyCode_ScrollLock: kt = CKeyType::kScrollLock; break;
+        case ServoUnityKeyCode_RightShift: kt = CKeyType::kShift; break;
+        case ServoUnityKeyCode_LeftShift: kt = CKeyType::kShift; break;
+        case ServoUnityKeyCode_RightControl: kt = CKeyType::kControl; break;
+        case ServoUnityKeyCode_LeftControl: kt = CKeyType::kControl; break;
+        case ServoUnityKeyCode_RightAlt: kt = CKeyType::kOptionAlt; break;
+        case ServoUnityKeyCode_LeftAlt: kt = CKeyType::kOptionAlt; break;
+        case ServoUnityKeyCode_LeftCommand: kt = CKeyType::kCommandWindows; break;
+        case ServoUnityKeyCode_LeftWindows: kt = CKeyType::kCommandWindows; break;
+        case ServoUnityKeyCode_RightCommand: kt = CKeyType::kCommandWindows; break;
+        case ServoUnityKeyCode_RightWindows: kt = CKeyType::kCommandWindows; break;
+        case ServoUnityKeyCode_AltGr: kt = CKeyType::kAltGr; break;
+        case ServoUnityKeyCode_Help: kt = CKeyType::kHelp; break;
+        case ServoUnityKeyCode_Print: kt = CKeyType::kPrint; break;
+        //case ServoUnityKeyCode_SysReq: kt = CKeyType::kSysReq; break;
+        //case ServoUnityKeyCode_Break: kt = CKeyType::kBreak; break;
+        //case ServoUnityKeyCode_Menu: kt = CKeyType::kMenu; break;
+        case ServoUnityKeyCode_Keypad0: kt = CKeyType::kCharacter; kc = '0'; break;
+        case ServoUnityKeyCode_Keypad1: kt = CKeyType::kCharacter; kc = '1'; break;
+        case ServoUnityKeyCode_Keypad2: kt = CKeyType::kCharacter; kc = '2'; break;
+        case ServoUnityKeyCode_Keypad3: kt = CKeyType::kCharacter; kc = '3'; break;
+        case ServoUnityKeyCode_Keypad4: kt = CKeyType::kCharacter; kc = '4'; break;
+        case ServoUnityKeyCode_Keypad5: kt = CKeyType::kCharacter; kc = '5'; break;
+        case ServoUnityKeyCode_Keypad6: kt = CKeyType::kCharacter; kc = '6'; break;
+        case ServoUnityKeyCode_Keypad7: kt = CKeyType::kCharacter; kc = '7'; break;
+        case ServoUnityKeyCode_Keypad8: kt = CKeyType::kCharacter; kc = '8'; break;
+        case ServoUnityKeyCode_Keypad9: kt = CKeyType::kCharacter; kc = '9'; break;
+        case ServoUnityKeyCode_KeypadPeriod: kt = CKeyType::kCharacter; kc = '.'; break;
+        case ServoUnityKeyCode_KeypadDivide: kt = CKeyType::kCharacter; kc = '/'; break;
+        case ServoUnityKeyCode_KeypadMultiply: kt = CKeyType::kCharacter; kc = '*'; break;
+        case ServoUnityKeyCode_KeypadMinus: kt = CKeyType::kCharacter; kc = '-'; break;
+        case ServoUnityKeyCode_KeypadPlus: kt = CKeyType::kCharacter; kc = '+'; break;
+        case ServoUnityKeyCode_KeypadEnter: kt = CKeyType::kEnter; break;
+        case ServoUnityKeyCode_KeypadEquals: kt = CKeyType::kCharacter; kc = '='; break;
+        default: return;
+    }
 
-void ServoUnityWindowGL::keyUp(int charCode) {
-    SERVOUNITYLOGi("ServoUnityWindowGL::keyUp(%d)\n", charCode);
-    if (!m_servoGLInited) return;
-    runOnServoThread([=] {key_up(charCode, CKeyType::kCharacter);});
+    if (upDown == 1) runOnServoThread([=] {key_down(kc, kt);});
+    else runOnServoThread([=] {key_up(kc, kt);});
 }
 
 //
