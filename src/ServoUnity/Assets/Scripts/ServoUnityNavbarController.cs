@@ -19,7 +19,7 @@ public class ServoUnityNavbarController : MonoBehaviour
     public Button ReloadButton;
     public Button HomeButton;
     public Text TitleText;
-    public Text URLTextField;
+    public InputField URLOrSearchInputField;
 
     void Awake()
     {
@@ -53,7 +53,7 @@ public class ServoUnityNavbarController : MonoBehaviour
 
     public void OnURLChanged(string URL)
     {
-        URLTextField.text = URL;
+        URLOrSearchInputField.text = URL;
     }
 
     public void OnBackPressed()
@@ -95,4 +95,11 @@ public class ServoUnityNavbarController : MonoBehaviour
         }
     }
 
+    public void OnURLOrSearchEditingComplete()
+    {
+        if (suc && suc.NavbarWindow)
+        {
+            suc.Plugin.ServoUnityWindowBrowserControlEvent(suc.NavbarWindow.WindowIndex, ServoUnityPlugin.ServoUnityWindowBrowserControlEventID.Navigate, 0, 0, URLOrSearchInputField.text);
+        }
+    }
 }

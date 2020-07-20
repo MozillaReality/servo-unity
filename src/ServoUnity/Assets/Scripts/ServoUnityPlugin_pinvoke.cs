@@ -126,6 +126,9 @@ public static class ServoUnityPlugin_pinvoke
     public static extern void servoUnitySetParamFloat(int param, [MarshalAsAttribute(UnmanagedType.I1)] bool flag);
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnitySetParamString(int param, string s);
+
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAsAttribute(UnmanagedType.I1)]
     public static extern bool servoUnityGetParamBool(int param);
 
@@ -134,4 +137,8 @@ public static class ServoUnityPlugin_pinvoke
 
     [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
     public static extern float servoUnityGetParamFloat(int param);
+
+    [DllImport(LIBRARY_NAME, CallingConvention = CallingConvention.Cdecl)]
+    public static extern void servoUnityGetParamString(int param, [MarshalAs(UnmanagedType.LPStr)] StringBuilder sbuf, int sbufLen);
+
 }

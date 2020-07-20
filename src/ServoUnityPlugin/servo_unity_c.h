@@ -94,8 +94,8 @@
 #  define SERVO_UNITY_CALLBACK
 #endif
 
-#define HOMEPAGE "https://servo.org/"
-#define SEARCH_URI "https://www.google.com/search?client=firefox-b-d&q="
+#define HOMEPAGE_DEFAULT "https://servo.org/"
+#define SEARCH_URI_DEFAULT "https://www.google.com/search?client=firefox-b-d&q="
 
 #ifdef __cplusplus
 extern "C" {
@@ -132,7 +132,7 @@ enum {
     ServoUnityBrowserEvent_IMEStateChanged = 4, // eventData1: 0=HideIME, 1=ShowIME
     ServoUnityBrowserEvent_HistoryChanged = 5, // eventData1: 0=CantGoBack, 1=CanGoBack, eventData2: 0=CantGoForward, 1=CanGoForward
     ServoUnityBrowserEvent_TitleChanged = 6,
-    ServoUnityBrowserEvent_URLChanged = 6,
+    ServoUnityBrowserEvent_URLChanged = 7,
     Total = 8
 };
 
@@ -321,7 +321,8 @@ enum {
 	ServoUnityPointerEventID_Press = 3,
 	ServoUnityPointerEventID_Release = 4,
     ServoUnityPointerEventID_Click = 5,
-	ServoUnityPointerEventID_ScrollDiscrete = 6
+	ServoUnityPointerEventID_ScrollDiscrete = 6,
+    ServoUnityPointerEventID_Max
 };
 
 /// For ServoUnityPointerEventID_Press, ServoUnityPointerEventID_Release, and ServoUnityPointerEventID_Click,
@@ -330,6 +331,7 @@ enum {
     ServoUnityPointerEventMouseButtonID_Left = 0,
     ServoUnityPointerEventMouseButtonID_Right = 1,
     ServoUnityPointerEventMouseButtonID_Middle = 2,
+    ServoUnityPointerEventMouseButtonID_Max
 };
 
 SERVO_UNITY_EXTERN void servoUnityWindowPointerEvent(int windowIndex, int eventParam0, int eventParam1, int eventID, int windowX, int windowY);
@@ -341,22 +343,27 @@ enum {
     ServoUnityWindowBrowserControlEventID_GoBack = 3,
     ServoUnityWindowBrowserControlEventID_GoForward = 4,
     ServoUnityWindowBrowserControlEventID_GoHome = 5,
-    ServoUnityWindowBrowserControlEventID_Navigate = 6
+    ServoUnityWindowBrowserControlEventID_Navigate = 6,
+    ServoUnityWindowBrowserControlEventID_Max
 };
 
 SERVO_UNITY_EXTERN void servoUnityWindowBrowserControlEvent(int windowIndex, int eventID, int eventParam0, int eventParam1, const char *eventParamS);
 
 enum {
 	ServoUnityParam_b_CloseNativeWindowOnClose = 0,
+    ServoUnityParam_s_SearchURI = 1,
+    ServoUnityParam_s_Homepage = 2,
 	ServoUnityParam_Max
 };
 
 SERVO_UNITY_EXTERN void servoUnitySetParamBool(int param, bool flag);
 SERVO_UNITY_EXTERN void servoUnitySetParamInt(int param, int val);
 SERVO_UNITY_EXTERN void servoUnitySetParamFloat(int param, float val);
+SERVO_UNITY_EXTERN void servoUnitySetParamString(int param, const char *s);
 SERVO_UNITY_EXTERN bool servoUnityGetParamBool(int param);
 SERVO_UNITY_EXTERN int servoUnityGetParamInt(int param);
 SERVO_UNITY_EXTERN float servoUnityGetParamFloat(int param);
+SERVO_UNITY_EXTERN void servoUnityGetParamString(int param, char *sbuf, int sbufLen);
 
 
 #ifdef __cplusplus

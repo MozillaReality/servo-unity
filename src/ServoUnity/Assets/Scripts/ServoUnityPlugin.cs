@@ -184,7 +184,8 @@ public class ServoUnityPlugin
         KeypadMinus = 70,
         KeypadPlus = 71,
         KeypadEnter = 72,
-        KeypadEquals = 73
+        KeypadEquals = 73,
+        Max
     };
 
     public void ServoUnityKeyEvent(int windowIndex, bool upDown, ServoUnityKeyCode keyCode, int character)
@@ -299,14 +300,16 @@ public class ServoUnityPlugin
         Press = 3,
         Release = 4,
         Click = 5,
-        ScrollDiscrete = 6
+        ScrollDiscrete = 6,
+        Max
     };
 
     public enum ServoUnityPointerEventMouseButtonID
     {
         Left = 0,
         Right = 1,
-        Middle = 2
+        Middle = 2,
+        Max
     };
 
     public void ServoUnityWindowPointerEvent(int windowIndex, ServoUnityPointerEventID eventID, int eventParam0, int eventParam1, int windowX, int windowY)
@@ -323,7 +326,7 @@ public class ServoUnityPlugin
         GoForward = 4,
         GoHome = 5,
         Navigate = 6,
-        Total = 7,
+        Max
     };
 
     public void ServoUnityWindowBrowserControlEvent(int windowIndex, ServoUnityWindowBrowserControlEventID eventID, int eventParam0, int eventParam1, string eventParamS)
@@ -341,7 +344,7 @@ public class ServoUnityPlugin
         HistoryChanged = 5, // eventData1: 0=CantGoBack, 1=CanGoBack, eventData1: 0=CantGoForward, 1=CanGoForward
         TitleChanged = 6,
         URLChanged = 7,
-        Total = 8
+        Max
     };
 
     public bool ServoUnityCloseWindow(int windowIndex)
@@ -361,6 +364,8 @@ public class ServoUnityPlugin
 
     public enum ServoUnityParam {
         b_CloseNativeWindowOnClose = 0,
+        s_SearchURI = 1,
+        s_Homepage = 2,
         Max
     };
 
@@ -379,6 +384,11 @@ public class ServoUnityPlugin
         ServoUnityPlugin_pinvoke.servoUnitySetParamFloat((int)param, val);
     }
 
+    public void ServoUnitySetParamString(ServoUnityParam param, string s)
+    {
+        ServoUnityPlugin_pinvoke.servoUnitySetParamString((int)param, s);
+    }
+
     public bool ServoUnityGetParamBool(ServoUnityParam param)
     {
         return ServoUnityPlugin_pinvoke.servoUnityGetParamBool((int)param);
@@ -394,4 +404,10 @@ public class ServoUnityPlugin
         return ServoUnityPlugin_pinvoke.servoUnityGetParamFloat((int)param);
     }
 
+    public string ServoUnityGetParamString(ServoUnityParam param)
+    {
+        var sb = new StringBuilder(16384); // 16kb
+        ServoUnityPlugin_pinvoke.servoUnityGetParamString((int)param, sb, sb.Capacity);
+        return sb.ToString();
+    }
 }

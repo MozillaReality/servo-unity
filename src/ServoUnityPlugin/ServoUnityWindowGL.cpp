@@ -23,6 +23,7 @@
 #  include <GL/glcorearb.h>
 #endif
 #include <stdlib.h>
+#include "servo_unity_internal.h"
 #include "servo_unity_log.h"
 #include "utils.h"
 
@@ -541,8 +542,8 @@ void ServoUnityWindowGL::goHome()
     if (!m_servoGLInited) return;
     // TODO: fetch the homepage from prefs.
     runOnServoThread([=] {
-        if (is_uri_valid(HOMEPAGE)) {
-            load_uri(HOMEPAGE);
+        if (is_uri_valid(s_param_Homepage.c_str())) {
+            load_uri(s_param_Homepage.c_str());
         };
     });
 }
@@ -564,13 +565,15 @@ void ServoUnityWindowGL::navigate(const std::string& urlOrSearchString)
                 if (is_uri_valid(withMethod.c_str())) {
                     uri = withMethod;
                 } else {
-                    uri = std::string(SEARCH_URI) + urlOrSearchString;
+                    uri = s_param_SearchURI + urlOrSearchString;
                 }
             } else {
-                uri = std::string(SEARCH_URI) + urlOrSearchString;
+                uri = s_param_SearchURI + urlOrSearchString;
             }
             if (is_uri_valid(uri.c_str())) {
-                load_uri(urlOrSearchString.c_str());
+                load_uri(uri.c_str());
+            } else {
+                SERVOUNITYLOGe("Malformed search string.\n");
             }
         }
     });
@@ -609,7 +612,7 @@ void ServoUnityWindowGL::on_title_changed(const char *title)
 
 bool ServoUnityWindowGL::on_allow_navigation(const char *url)
 {
-    SERVOUNITYLOGi("servo callback on_allow_navigation: %s\n", url);
+    SERVOUNITYLOGd("servo callback on_allow_navigation: %s\n", url);
     return true;
 }
 
@@ -653,19 +656,20 @@ void ServoUnityWindowGL::on_ime_state_changed(bool show)
 const char *ServoUnityWindowGL::get_clipboard_contents(void)
 {
     SERVOUNITYLOGi("servo callback get_clipboard_contents\n");
-    // TODO: implement
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
     return nullptr;
 }
 
 void ServoUnityWindowGL::set_clipboard_contents(const char *contents)
 {
     SERVOUNITYLOGi("servo callback set_clipboard_contents: %s\n", contents);
-    // TODO: implement
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
 }
 
 void ServoUnityWindowGL::on_media_session_metadata(const char *title, const char *album, const char *artist)
 {
     SERVOUNITYLOGi("servo callback on_media_session_metadata: title:%s, album:%s, artist:%s\n", title, album, artist);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
 }
 
 void ServoUnityWindowGL::on_media_session_playback_state_change(CMediaSessionPlaybackState state)
@@ -686,33 +690,39 @@ void ServoUnityWindowGL::on_media_session_playback_state_change(CMediaSessionPla
             break;
     }
     SERVOUNITYLOGi("servo callback on_media_session_playback_state_change: %s\n", stateA);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
 }
 
 void ServoUnityWindowGL::on_media_session_set_position_state(double duration, double position, double playback_rate)
 {
     SERVOUNITYLOGi("servo callback on_media_session_set_position_state: duration:%f, position:%f, playback_rate:%f\n", duration, position, playback_rate);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
 }
 
 void ServoUnityWindowGL::prompt_alert(const char *message, bool trusted)
 {
     SERVOUNITYLOGi("servo callback prompt_alert%s: %s\n", trusted ? " (trusted)" : "", message);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
 }
 
 CPromptResult ServoUnityWindowGL::prompt_ok_cancel(const char *message, bool trusted)
 {
     SERVOUNITYLOGi("servo callback prompt_ok_cancel%s: %s\n", trusted ? " (trusted)" : "", message);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
     return CPromptResult::Dismissed;
 }
 
 CPromptResult ServoUnityWindowGL::prompt_yes_no(const char *message, bool trusted)
 {
     SERVOUNITYLOGi("servo callback prompt_yes_no%s: %s\n", trusted ? " (trusted)" : "", message);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
     return CPromptResult::Dismissed;
 }
 
 const char *ServoUnityWindowGL::prompt_input(const char *message, const char *def, bool trusted)
 {
     SERVOUNITYLOGi("servo callback prompt_input%s: %s\n", trusted ? " (trusted)" : "", message);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
     return def;
 }
 
@@ -731,6 +741,7 @@ void ServoUnityWindowGL::on_devtools_started(CDevtoolsServerState result, unsign
             break;
     }
     SERVOUNITYLOGi("servo callback on_devtools_started: result:%s, port:%d\n", resultA, port);
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
 }
 
 void ServoUnityWindowGL::show_context_menu(const char *title, const char *const *items_list, uint32_t items_size)
@@ -739,6 +750,7 @@ void ServoUnityWindowGL::show_context_menu(const char *title, const char *const 
     for (int i = 0; i < items_size; i++) {
         SERVOUNITYLOGi("    item %n:%s\n", i, items_list[i]);
     }
+    SERVOUNITYLOGw("UNIMPLEMENTED\n");
     on_context_menu_closed(CContextMenuResult::Dismissed_, 0);
 }
 

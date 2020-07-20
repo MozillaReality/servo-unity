@@ -135,6 +135,8 @@ public class ServoUnityController : MonoBehaviour
         // Set any launch-time parameters.
         if (DontCloseNativeWindowOnClose)
             servo_unity_plugin.ServoUnitySetParamBool(ServoUnityPlugin.ServoUnityParam.b_CloseNativeWindowOnClose, false);
+        if (!String.IsNullOrEmpty(Homepage))
+            servo_unity_plugin.ServoUnitySetParamString(ServoUnityPlugin.ServoUnityParam.s_Homepage, Homepage);
 
         // Set the reference to the plugin in any other objects in the scene that need it.
         ServoUnityWindow[] servoUnityWindows = FindObjectsOfType<ServoUnityWindow>();

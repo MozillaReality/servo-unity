@@ -14,11 +14,11 @@
 
 #include "servo_unity_c.h"
 #include "servo_unity_log.h"
+#include "servo_unity_internal.h"
 
 #include "ServoUnityWindowDX11.h"
 #include "ServoUnityWindowGL.h"
 #include <memory>
-#include <string>
 #include <assert.h>
 #include <map>
 #include "simpleservo.h"
@@ -48,9 +48,14 @@ static PFN_BROWSEREVENTCALLBACK m_browserEventCallback = nullptr;
 static std::map<int, std::unique_ptr<ServoUnityWindow>> s_windows;
 static int s_windowIndexNext = 1;
 
-static bool s_param_CloseNativeWindowOnClose = true;
-
 static const char *s_servoVersion = nullptr; // To avoid repeated leaking of servo's version string, we'll stash it here.
+
+// --------------------------------------------------------------------------
+//  Configuration parameters
+
+bool s_param_CloseNativeWindowOnClose = true;
+std::string s_param_SearchURI = SEARCH_URI_DEFAULT;
+std::string s_param_Homepage = HOMEPAGE_DEFAULT;
 
 // --------------------------------------------------------------------------
 
@@ -198,7 +203,7 @@ void servoUnityFlushLog(void)
 
 bool servoUnityGetVersion(char *buffer, int length)
 {
-	if (!buffer) return false;
+	if (!buffer || length <= 0) return false;
 
     if (!s_servoVersion) {
         s_servoVersion = servo_version();
@@ -309,6 +314,20 @@ void servoUnitySetParamInt(int param, int val)
     // No parameters to set yet.
 }
 
+void servoUnitySetParamString(int param, const char *s)
+{
+    switch (param) {
+        case ServoUnityParam_s_SearchURI:
+            s_param_SearchURI = std::string(s);
+            break;
+        case ServoUnityParam_s_Homepage:
+            s_param_Homepage = std::string(s);
+            break;
+        default:
+            break;
+    }
+}
+
 void servoUnitySetParamFloat(int param, float val)
 {
     // No parameters to set yet.
@@ -336,6 +355,22 @@ float servoUnityGetParamFloat(int param)
 {
     // No parameters to query yet.
 	return 0.0f;
+}
+
+void servoUnityGetParamString(int param, char *sbuf, int sbufLen)
+{
+    if (!sbuf || sbufLen <= 0) return;
+    switch (param) {
+        case ServoUnityParam_s_SearchURI:
+            strncpy(sbuf, s_param_SearchURI.c_str(), sbufLen - 1);
+            break;
+        case ServoUnityParam_s_Homepage:
+            strncpy(sbuf, s_param_Homepage.c_str(), sbufLen - 1);
+            break;
+        default:
+            break;
+    }
+    sbuf[sbufLen - 1] = '\0'; // Guarantee nul-termination, even if truncated.
 }
 
 bool servoUnityCloseWindow(int windowIndex)
@@ -515,4 +550,5 @@ void servoUnityWindowBrowserControlEvent(int windowIndex, int eventID, int event
         break;
     default:
         break;
-    }}
+    }
+}
