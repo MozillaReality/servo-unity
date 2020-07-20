@@ -49,3 +49,4 @@ ServoUnity.sln
 Assembly-CSharp.csproj
 src/ServoUnity/Assets/Plugins/servo_unity.bundle
 src/ServoUnityPlugin/macOS/servo_unity.xcodeproj/xcuserdata
+Assembly-CSharp-Editor.csproj
