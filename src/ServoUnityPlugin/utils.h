@@ -26,6 +26,14 @@ extern "C" {
 // Can be printed e.g. with printf("thread ID is %" PRIu64 "\n");
 extern uint64_t getThreadID(void);
 
+typedef struct {
+    long secs;
+    int  millisecs;
+} utilTime;
+
+extern utilTime getTimeNow(void);
+extern unsigned long millisecondsElapsedSince(utilTime time);
+
 #ifdef __cplusplus
 }
 #endif

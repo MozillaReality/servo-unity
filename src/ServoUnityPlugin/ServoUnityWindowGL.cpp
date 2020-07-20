@@ -59,7 +59,8 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
     m_updateContinuously(false),
     m_updateOnce(false),
     m_title(std::string()),
-    m_URL(std::string())
+    m_URL(std::string()),
+    m_waitingForShutdown(false)
 {
 }
 
@@ -292,12 +293,34 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
 }
 
 void ServoUnityWindowGL::cleanupRenderer(void) {
-    if (!m_servoGLInited) return;
-    std::lock_guard<std::mutex> lock(m_servoTasksLock);
+    if (!m_servoGLInited) {
+        SERVOUNITYLOGw("Cleanup renderer called with no renderer active.\n");
+        return;
+    }
+    SERVOUNITYLOGd("Cleaning up renderer...\n");
+    // First, clear waiting tasks and ensure no new tasks are queued while shutting down.
+    std::lock_guard<std::mutex> tasksLock(m_servoTasksLock);
     m_servoTasks.clear();
+
+    // Next, we'll request shutdown and wait on callback on_shutdown_complete before
+    // finishing with deinit().
+    m_waitingForShutdown = true;
+    utilTime timeStart = getTimeNow();
+    request_shutdown();
+    while (m_waitingForShutdown == true) {
+        if (millisecondsElapsedSince(timeStart) > 2000L) {
+            SERVOUNITYLOGw("Timed out waiting for Servo shutdown.\n");
+            break;
+        }
+        perform_updates();
+    }
+
     deinit();
-    s_servo = nullptr;
     m_servoGLInited = false;
+    s_servo = nullptr;
+
+    queueBrowserEventCallbackTask(uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0);
+    SERVOUNITYLOGd("Cleaning up renderer... DONE.\n");
 }
 
 void ServoUnityWindowGL::runOnServoThread(std::function<void()> task) {
@@ -615,9 +638,9 @@ void ServoUnityWindowGL::on_animating_changed(bool animating)
 
 void ServoUnityWindowGL::on_shutdown_complete(void)
 {
-    SERVOUNITYLOGi("servo callback on_shutdown_complete\n");
+    SERVOUNITYLOGd("servo callback on_shutdown_complete\n");
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_Shutdown, 0, 0);
+    s_servo->m_waitingForShutdown = false;
 }
 
 void ServoUnityWindowGL::on_ime_state_changed(bool show)

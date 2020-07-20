@@ -24,6 +24,14 @@
 #  include <sys/types.h>
 #endif
 
+#ifdef _WIN32
+#  include <windows.h>
+#  include <sys/timeb.h>
+#else
+#  include <time.h>
+#  include <sys/time.h>
+#endif
+
 uint64_t getThreadID()
 {
     uint64_t tid = 0;
@@ -37,4 +45,34 @@ uint64_t getThreadID()
     tid = (uint64_t) = pthread_getthreadid_np(); // Cast from int.
 #endif
     return tid;
+}
+
+utilTime getTimeNow(void)
+{
+    utilTime timeNow;
+#ifdef _WIN32
+    struct _timeb sys_time;
+
+    _ftime_s(&sys_time);
+    timeNow.secs = (long)sys_time.time;
+    timeNow.millisecs = sys_time.millitm;
+#else
+    struct timeval time;
+
+#  if defined(__linux) || defined(__APPLE__) || defined(EMSCRIPTEN)
+    gettimeofday(&time, NULL);
+#  else
+    gettimeofday(&time);
+#  endif
+    timeNow.secs = time.tv_sec;
+    timeNow.millisecs = time.tv_usec/1000;
+#endif
+
+    return timeNow;
+}
+
+unsigned long millisecondsElapsedSince(utilTime time)
+{
+    utilTime timeNow = getTimeNow();
+    return ((timeNow.secs - time.secs)*1000 + (timeNow.millisecs - time.millisecs)); // The second addend can be negative.
 }

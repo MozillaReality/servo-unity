@@ -47,6 +47,7 @@ private:
     std::mutex m_updateLock;
     std::string m_title;
     std::string m_URL;
+    bool m_waitingForShutdown;
 
     static void on_load_started(void);
     static void on_load_ended(void);

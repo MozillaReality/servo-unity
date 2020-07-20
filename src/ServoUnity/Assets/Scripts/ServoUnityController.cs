@@ -45,7 +45,7 @@
 
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class ServoUnityController : MonoBehaviour
@@ -74,6 +74,8 @@ public class ServoUnityController : MonoBehaviour
 
     private bool IMEActive = false;
     private int IMEWindowIndex = 0;
+
+    private bool waitingForShutdown = false;
 
     [NonSerialized] public ServoUnityWindow NavbarWindow = null;
 
@@ -142,20 +144,6 @@ public class ServoUnityController : MonoBehaviour
         }
     }
 
-    //
-    // Handlers for callbacks from plugin.
-    //
-    
-    private void HandleFullScreenBegin(int pixelwidth, int pixelheight, int format, int projection)
-    {
-        Debug.Log("ServoUnityController.HandleFullScreenBegin(" + pixelwidth + ", " + pixelheight + ", " + format + ", " + projection + ")");
-    }
-
-    private void HandleFullScreenEnd()
-    {
-        Debug.Log("ServoUnityController.HandleFullScreenEnd()");
-    }
-
     void OnDisable()
     {
         Debug.Log("ServoUnityController.OnDisable()");
@@ -210,7 +198,8 @@ public class ServoUnityController : MonoBehaviour
             {
                 ServoUnityPlugin.ServoUnityKeyCode keyCode;
                 int character = 0;
-                switch (e.keyCode) {
+                switch (e.keyCode)
+                {
                     case KeyCode.Backspace: keyCode = ServoUnityPlugin.ServoUnityKeyCode.Backspace; break;
                     case KeyCode.Delete: keyCode = ServoUnityPlugin.ServoUnityKeyCode.Delete; break;
                     case KeyCode.Tab: keyCode = ServoUnityPlugin.ServoUnityKeyCode.Tab; break;
@@ -308,124 +297,11 @@ public class ServoUnityController : MonoBehaviour
         servo_unity_plugin.ServoUnityFlushLog();
     }
 
-    [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginWindowResizedCallback))]
-    void OnServoWindowResized(int uid, int widthPixels, int heightPixels)
-    {
-        ServoUnityWindow window = ServoUnityWindow.FindWindowWithUID(uid);
-        if (window == null)
-        {
-            Debug.LogError("ServoUnityController.OnFxWindowResized: Received update request for a window that doesn't exist.");
-            return;
-        }
+    //
+    // Handlers for callbacks from plugin.
+    //
 
-        window.WasResized(widthPixels, heightPixels);
-    }
-
-    [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginBrowserEventCallback))]
-    void OnServoBrowserEvent(int uid, int eventType, int eventData1, int eventData2)
-    {
-        ServoUnityWindow window = ServoUnityWindow.FindWindowWithUID(uid);
-        if (window == null)
-        {
-            Debug.LogError("ServoUnityController.OnServoBrowserEvent: Received event for a window that doesn't exist.");
-            return;
-        }
-
-        switch ((ServoUnityPlugin.ServoUnityBrowserEventType)eventType)
-        {
-            case ServoUnityPlugin.ServoUnityBrowserEventType.NOP:
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.Shutdown:
-                // Browser is shutting down. So should we.
-                OnApplicationQuit();
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.LoadStateChanged:
-                {
-                    Debug.Log($"Servo browser event: load {(eventData1 == 1 ? "began" : "ended")}.");
-                    if (navbarController) navbarController.OnLoadStateChanged(eventData1 == 1);
-                }
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.IMEStateChanged:
-                {
-                    Debug.Log($"Servo browser event: {(eventData1 == 1 ? "show" : "hide")} IME.");
-                    IMEActive = (eventData1 == 1);
-                    IMEWindowIndex = window.WindowIndex;
-                }
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.FullscreenStateChanged:
-                {
-                    switch (eventData1)
-                    {
-                        case 0:
-                            // Will enter fullscreen. Should e.g. hide windows and other UI.
-                            Debug.Log("Servo browser event: will enter fullscreen.");
-                            break;
-                        case 1:
-                            // Did enter fullscreen. Should e.g. show an "exit fullscreen" control.
-                            Debug.Log("Servo browser event: did enter fullscreen.");
-                            break;
-                        case 2:
-                            // Will exit fullscreen. Should e.g. hide "exit fullscreen" control.
-                            Debug.Log("Servo browser event: will exit fullscreen.");
-                            break;
-                        case 3:
-                            // Did exit fullscreen. Should e.g. show windows and other UI.
-                            Debug.Log("Servo browser event: did exit fullscreen.");
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.HistoryChanged:
-                {
-                    Debug.Log($"Servo browser event: history changed, {(eventData1 == 1 ? "can" : "can't")} go back, {(eventData2 == 1 ? "can" : "can't")} go forward.");
-                    if (navbarController) navbarController.OnHistoryChanged(eventData1 == 1, eventData2 == 1);
-                }
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.TitleChanged:
-                {
-                    Debug.Log("Servo browser event: title changed.");
-                    if (navbarController) navbarController.OnTitleChanged(servo_unity_plugin.ServoUnityGetWindowTitle(window.WindowIndex));
-                }
-                break;
-            case ServoUnityPlugin.ServoUnityBrowserEventType.URLChanged:
-                {
-                    Debug.Log("Servo browser event: URL changed.");
-                    if (navbarController) navbarController.OnURLChanged(servo_unity_plugin.ServoUnityGetWindowURL(window.WindowIndex));
-                }
-                break;
-            default:
-                Debug.Log("Servo browser event: unknown event.");
-                break;
-
-        }
-    }
-
-
-    private void OnApplicationQuit()
-    {
-        Debug.Log("ServoUnityController.OnApplicationQuit()");
-        ServoUnityWindow[] servoUnityWindows = FindObjectsOfType<ServoUnityWindow>();
-        foreach (ServoUnityWindow w in servoUnityWindows)
-        {
-            w.Close();
-        }
-
-        servo_unity_plugin.ServoUnityFinalise();
-    }
-
-    public SERVO_UNITY_LOG_LEVEL LogLevel
-    {
-        get { return currentLogLevel; }
-
-        set
-        {
-            currentLogLevel = value;
-            servo_unity_plugin.ServoUnitySetLogLevel((int) currentLogLevel);
-        }
-    }
-
+    [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginWindowCreatedCallback))]
     void OnServoWindowCreated(int uid, int windowIndex, int widthPixels, int heightPixels, int formatNative)
     {
         ServoUnityWindow window = ServoUnityWindow.FindWindowWithUID(uid);
@@ -472,10 +348,163 @@ public class ServoUnityController : MonoBehaviour
                 format = TextureFormat.RGB565;
                 break;
             default:
-                format = (TextureFormat) 0;
+                format = (TextureFormat)0;
                 break;
         }
 
         window.WasCreated(windowIndex, widthPixels, heightPixels, format);
     }
+
+    [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginWindowResizedCallback))]
+    void OnServoWindowResized(int uid, int widthPixels, int heightPixels)
+    {
+        ServoUnityWindow window = ServoUnityWindow.FindWindowWithUID(uid);
+        if (window == null)
+        {
+            Debug.LogError("ServoUnityController.OnFxWindowResized: Received update request for a window that doesn't exist.");
+            return;
+        }
+
+        window.WasResized(widthPixels, heightPixels);
+    }
+
+    [AOT.MonoPInvokeCallback(typeof(ServoUnityPluginBrowserEventCallback))]
+    void OnServoBrowserEvent(int uid, int eventType, int eventData1, int eventData2)
+    {
+        ServoUnityWindow window = ServoUnityWindow.FindWindowWithUID(uid);
+        if (window == null)
+        {
+            Debug.LogError("ServoUnityController.OnServoBrowserEvent: Received event for a window that doesn't exist.");
+            return;
+        }
+
+        switch ((ServoUnityPlugin.ServoUnityBrowserEventType)eventType)
+        {
+            case ServoUnityPlugin.ServoUnityBrowserEventType.NOP:
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.Shutdown:
+                // Browser has shut down.
+                waitingForShutdown = false;
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.LoadStateChanged:
+                {
+                    Debug.Log($"Servo browser event: load {(eventData1 == 1 ? "began" : "ended")}.");
+                    if (navbarController) navbarController.OnLoadStateChanged(eventData1 == 1);
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.IMEStateChanged:
+                {
+                    Debug.Log($"Servo browser event: {(eventData1 == 1 ? "show" : "hide")} IME.");
+                    IMEActive = (eventData1 == 1);
+                    IMEWindowIndex = window.WindowIndex;
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.FullscreenStateChanged:
+                {
+                    switch (eventData1)
+                    {
+                        case 0:
+                            // Will enter fullscreen. Should e.g. hide windows and other UI.
+                            Debug.Log("Servo browser event: will enter fullscreen.");
+                            break;
+                        case 1:
+                            // Did enter fullscreen. Should e.g. show an "exit fullscreen" control.
+                            Debug.Log("Servo browser event: did enter fullscreen.");
+                            break;
+                        case 2:
+                            // Will exit fullscreen. Should e.g. hide "exit fullscreen" control.
+                            Debug.Log("Servo browser event: will exit fullscreen.");
+                            break;
+                        case 3:
+                            // Did exit fullscreen. Should e.g. show windows and other UI.
+                            Debug.Log("Servo browser event: did exit fullscreen.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.HistoryChanged:
+                {
+                    Debug.Log($"Servo browser event: history changed, {(eventData1 == 1 ? "can" : "can't")} go back, {(eventData2 == 1 ? "can" : "can't")} go forward.");
+                    navbarController?.OnHistoryChanged(eventData1 == 1, eventData2 == 1);
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.TitleChanged:
+                {
+                    Debug.Log("Servo browser event: title changed.");
+                    navbarController?.OnTitleChanged(servo_unity_plugin.ServoUnityGetWindowTitle(window.WindowIndex));
+                }
+                break;
+            case ServoUnityPlugin.ServoUnityBrowserEventType.URLChanged:
+                {
+                    Debug.Log("Servo browser event: URL changed.");
+                    navbarController?.OnURLChanged(servo_unity_plugin.ServoUnityGetWindowURL(window.WindowIndex));
+                }
+                break;
+            default:
+                Debug.Log("Servo browser event: unknown event.");
+                break;
+
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Debug.Log("ServoUnityController.OnApplicationQuit()");
+
+        ServoUnityWindow[] servoUnityWindows = FindObjectsOfType<ServoUnityWindow>();
+        foreach (ServoUnityWindow w in servoUnityWindows)
+        {
+            w.CleanupRenderer();
+        }
+
+        // Because Servo cleanup must happen on the GPU thread, we must wait until
+        // the GPU thread has time to process the cleanup. We assume that the GPU thread
+        // continues to be called while we block the UI thread in a spinlock servicing
+        // window events in the plugn. We'll exit the spinlock when one of those events
+        // is a callback to signal the browser shutdown, or when a timeout is reached.
+        // If we have more than one window, we'll need to change this logic to
+        // wait for all windows to be shut down. At the moment, it will continue
+        // as soon as the first is done.
+
+        System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+        stopWatch.Start();
+        if (servoUnityWindows.Length > 0)
+        {
+            waitingForShutdown = true;
+            do
+            {
+                servo_unity_plugin.ServoUnityServiceWindowEvents(servoUnityWindows[0].WindowIndex);
+            } while (waitingForShutdown == true && stopWatch.ElapsedMilliseconds < 2000);
+            stopWatch.Stop();
+            if (waitingForShutdown)
+            {
+                Debug.LogWarning("Timed out waiting for browser shutdown.");
+            }
+        }
+
+        // Allow any events from the browser shutdown on the GPU thread to make it into the log.
+        servo_unity_plugin.ServoUnityFlushLog();
+
+        // Now safe to close the windows.
+        foreach (ServoUnityWindow w in servoUnityWindows)
+        {
+            w.Close();
+        }
+
+        servo_unity_plugin.ServoUnityFinalise();
+    }
+
+    public SERVO_UNITY_LOG_LEVEL LogLevel
+    {
+        get { return currentLogLevel; }
+
+        set
+        {
+            currentLogLevel = value;
+            servo_unity_plugin.ServoUnitySetLogLevel((int)currentLogLevel);
+        }
+    }
+
 }

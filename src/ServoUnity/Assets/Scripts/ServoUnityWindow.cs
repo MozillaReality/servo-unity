@@ -113,6 +113,14 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         }
     }
 
+    public void CleanupRenderer()
+    {
+        Debug.Log("ServoUnityWindow.CleanupRenderer()");
+        if (_windowIndex == 0) return;
+
+        servo_unity_plugin?.ServoUnityCleanupRenderer(_windowIndex);
+    }
+
     public void Close()
     {
         Debug.Log("ServoUnityWindow.Close()");
@@ -131,7 +139,11 @@ public class ServoUnityWindow : ServoUnityPointableSurface
 
     public bool Resize(int widthPixels, int heightPixels)
     {
-        return servo_unity_plugin.ServoUnityRequestWindowSizeChange(_windowIndex, widthPixels, heightPixels);
+        if (servo_unity_plugin != null)
+        {
+            return servo_unity_plugin.ServoUnityRequestWindowSizeChange(_windowIndex, widthPixels, heightPixels);
+        }
+        return false;
     }
 
     public void WasCreated(int windowIndex, int widthPixels, int heightPixels, TextureFormat format)
@@ -157,8 +169,7 @@ public class ServoUnityWindow : ServoUnityPointableSurface
         Height = (Width / widthPixels) * heightPixels;
         videoSize = new Vector2Int(widthPixels, heightPixels);
         var oldTexture = _videoTexture;
-        _videoTexture =
-            CreateWindowTexture(videoSize.x, videoSize.y, _textureFormat, out textureScaleU, out textureScaleV);
+        _videoTexture = CreateWindowTexture(videoSize.x, videoSize.y, _textureFormat, out textureScaleU, out textureScaleV);
         Destroy(oldTexture);
 
         ServoUnityTextureUtils.Configure2DVideoSurface(_videoMeshGO, _videoTexture, textureScaleU, textureScaleV, Width,
@@ -170,19 +181,16 @@ public class ServoUnityWindow : ServoUnityPointableSurface
     {
         if (_windowIndex == 0) return;
 
-        servo_unity_plugin.ServoUnityServiceWindowEvents(_windowIndex);
+        servo_unity_plugin?.ServoUnityServiceWindowEvents(_windowIndex);
 
         //Debug.Log("ServoUnityWindow.Update() with _windowIndex == " + _windowIndex);
         servo_unity_plugin?.ServoUnityRequestWindowUpdate(_windowIndex, Time.deltaTime);
     }
 
-    // Pointer events from ServoUnityLaserPointer.
-
-//
     private Texture2D CreateWindowTexture(int videoWidth, int videoHeight, TextureFormat format,
         out float textureScaleU, out float textureScaleV)
     {
-// Check parameters.
+        // Check parameters.
         var vt = ServoUnityTextureUtils.CreateTexture(videoWidth, videoHeight, format);
         if (vt == null)
         {
