@@ -48,7 +48,7 @@ ServoUnityWindowGL::ServoUnityWindowGL(int uid, int uidExt, Size size) :
 	m_size(size),
 	m_texID(0),
 	m_buf(NULL),
-	m_format(ServoUnityTextureFormat_BGRA32),
+	m_format(ServoUnityTextureFormat_RGBA32), // Servo's default.
 	m_pixelIntFormatGL(0),
 	m_pixelFormatGL(0),
 	m_pixelTypeGL(0),
