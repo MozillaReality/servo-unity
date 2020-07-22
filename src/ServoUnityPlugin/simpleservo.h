@@ -121,7 +121,6 @@ typedef struct {
   int32_t width;
   int32_t height;
   float density;
-  bool enable_subpixel_text_antialiasing;
   const char *const *vslogger_mod_list;
   uint32_t vslogger_mod_size;
   void *native_widget;
@@ -140,7 +139,8 @@ typedef struct {
   void (*on_history_changed)(bool can_go_back, bool can_go_forward);
   void (*on_animating_changed)(bool animating);
   void (*on_shutdown_complete)(void);
-  void (*on_ime_state_changed)(bool show);
+  void (*on_ime_show)(const char *text, int32_t x, int32_t y, int32_t width, int32_t height);
+  void (*on_ime_hide)(void);
   const char *(*get_clipboard_contents)(void);
   void (*set_clipboard_contents)(const char *contents);
   void (*on_media_session_metadata)(const char *title, const char *album, const char *artist);
@@ -150,7 +150,7 @@ typedef struct {
   CPromptResult (*prompt_ok_cancel)(const char *message, bool trusted);
   CPromptResult (*prompt_yes_no)(const char *message, bool trusted);
   const char *(*prompt_input)(const char *message, const char *def, bool trusted);
-  void (*on_devtools_started)(CDevtoolsServerState result, unsigned int port);
+  void (*on_devtools_started)(CDevtoolsServerState result, unsigned int port, const char *token);
   void (*show_context_menu)(const char *title, const char *const *items_list, uint32_t items_size);
   void (*on_log_output)(const char *buffer, uint32_t buffer_length);
 } CHostCallbacks;
@@ -178,6 +178,8 @@ CPrefList get_prefs(void);
 void go_back(void);
 
 void go_forward(void);
+
+void ime_dismissed(void);
 
 void init_with_egl(CInitOptions opts, void (*wakeup)(void), CHostCallbacks callbacks);
 

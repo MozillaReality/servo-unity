@@ -166,14 +166,6 @@ void* ServoUnityWindowGL::nativePtr() {
 void ServoUnityWindowGL::requestUpdate(float timeDelta) {
     SERVOUNITYLOGd("ServoUnityWindowGL::requestUpdate(%f)\n", timeDelta);
 
-    // Wrap Servo calls with save/restore of Unity GL context.
-#ifdef __APPLE__
-    CGLContextObj glContextUnity = CGLGetCurrentContext();
-#elif defined(_WIN32)
-    HGLRC glContextUnity = wglGetCurrentContext();
-    HDC glCurrentDeviceUnity = wglGetCurrentDC();
-#endif
-
     if (!m_servoGLInited) {
         if (s_servo) {
             SERVOUNITYLOGe("servo already inited.\n");
@@ -216,7 +208,6 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
             .width = m_size.w,
             .height = m_size.h,
             .density = 1.0f,
-            .enable_subpixel_text_antialiasing = true,
             .vslogger_mod_list = nullptr,
             .vslogger_mod_size = 0,
             .native_widget = nullptr
@@ -230,7 +221,8 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
             .on_history_changed = on_history_changed,
             .on_animating_changed = on_animating_changed,
             .on_shutdown_complete = on_shutdown_complete,
-            .on_ime_state_changed = on_ime_state_changed,
+            .on_ime_show = on_ime_show,
+            .on_ime_hide = on_ime_hide,
             .get_clipboard_contents = get_clipboard_contents,
             .set_clipboard_contents = set_clipboard_contents,
             .on_media_session_metadata = on_media_session_metadata,
@@ -244,6 +236,9 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
             .show_context_menu = show_context_menu,
             .on_log_output = on_log_output
         };
+
+        // init_with_gl will capture the active GL context for later use by fill_gl_texture.
+        // This will be the Unity GL context.
         init_with_gl(cio, wakeup, chc);
         free(args);
 
@@ -278,19 +273,9 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
         task();
     }
 
-#ifdef __APPLE__
-    CGLSetCurrentContext(glContextUnity);
-#elif defined(_WIN32)
-    wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
-#endif
-
+    // fill_gl_texture sets the GL context to the same Unity GL context.
     fill_gl_texture(m_texID, m_size.w, m_size.h);
 
-#ifdef __APPLE__
-    CGLSetCurrentContext(glContextUnity);
-#elif defined(_WIN32)
-    wglMakeCurrent(glCurrentDeviceUnity, glContextUnity);
-#endif
 }
 
 void ServoUnityWindowGL::cleanupRenderer(void) {
@@ -299,6 +284,7 @@ void ServoUnityWindowGL::cleanupRenderer(void) {
         return;
     }
     SERVOUNITYLOGd("Cleaning up renderer...\n");
+
     // First, clear waiting tasks and ensure no new tasks are queued while shutting down.
     std::lock_guard<std::mutex> tasksLock(m_servoTasksLock);
     m_servoTasks.clear();
@@ -646,11 +632,18 @@ void ServoUnityWindowGL::on_shutdown_complete(void)
     s_servo->m_waitingForShutdown = false;
 }
 
-void ServoUnityWindowGL::on_ime_state_changed(bool show)
+void ServoUnityWindowGL::on_ime_show(const char *text, int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    SERVOUNITYLOGi("servo callback get_clipboard_contents\n");
+    SERVOUNITYLOGd("servo callback on_ime_show(text:%s, x:%d, y:%d, width:%d, height:%d)\n");
     if (!s_servo) return;
-    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, show ? 1 : 0, 0);
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, 1, 0);
+}
+
+void ServoUnityWindowGL::on_ime_hide(void)
+{
+    SERVOUNITYLOGi("servo callback on_ime_hide\n");
+    if (!s_servo) return;
+    s_servo->queueBrowserEventCallbackTask(s_servo->uidExt(), ServoUnityBrowserEvent_IMEStateChanged, 0, 0);
 }
 
 const char *ServoUnityWindowGL::get_clipboard_contents(void)
@@ -726,7 +719,7 @@ const char *ServoUnityWindowGL::prompt_input(const char *message, const char *de
     return def;
 }
 
-void ServoUnityWindowGL::on_devtools_started(CDevtoolsServerState result, unsigned int port)
+void ServoUnityWindowGL::on_devtools_started(CDevtoolsServerState result, unsigned int port, const char *token)
 {
     const char *resultA;
     switch (result) {

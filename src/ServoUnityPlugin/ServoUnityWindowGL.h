@@ -57,7 +57,8 @@ private:
     static void on_history_changed(bool can_go_back, bool can_go_forward);
     static void on_animating_changed(bool animating);
     static void on_shutdown_complete(void);
-    static void on_ime_state_changed(bool show);
+    static void on_ime_show(const char *text, int32_t x, int32_t y, int32_t width, int32_t height);
+    static void on_ime_hide(void);
     static const char *get_clipboard_contents(void);
     static void set_clipboard_contents(const char *contents);
     static void on_media_session_metadata(const char *title, const char *album, const char *artist);
@@ -67,7 +68,7 @@ private:
     static CPromptResult prompt_ok_cancel(const char *message, bool trusted);
     static CPromptResult prompt_yes_no(const char *message, bool trusted);
     static const char *prompt_input(const char *message, const char *def, bool trusted);
-    static void on_devtools_started(CDevtoolsServerState result, unsigned int port);
+    static void on_devtools_started(CDevtoolsServerState result, unsigned int port, const char *token);
     static void show_context_menu(const char *title, const char *const *items_list, uint32_t items_size);
     static void on_log_output(const char *buffer, uint32_t buffer_length);
     static void wakeup(void);
