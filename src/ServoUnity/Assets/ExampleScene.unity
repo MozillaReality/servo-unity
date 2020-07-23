@@ -1733,6 +1733,7 @@ GameObject:
   - component: {fileID: 1772980975}
   - component: {fileID: 1772980974}
   - component: {fileID: 1772980973}
+  - component: {fileID: 1772980976}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1805,6 +1806,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1772980976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772980972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299793a701567468b9527ea8e45e33e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1824808045
 GameObject:
   m_ObjectHideFlags: 0
@@ -2230,6 +2243,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Mushroom Crystal Cave
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029841971410870078, guid: b1c3c5bf6453e3e4aaff00dd6d9a26ee,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8029841971410870079, guid: b1c3c5bf6453e3e4aaff00dd6d9a26ee,
         type: 3}

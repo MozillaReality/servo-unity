@@ -193,6 +193,14 @@ public class ServoUnityController : MonoBehaviour
         servo_unity_plugin.ServoUnityInit(OnServoWindowCreated, OnServoWindowResized, OnServoBrowserEvent);
     }
 
+    public bool KeyboardInUse
+    {
+        get
+        {
+            return (IMEActive || navbarController.URLOrSearchInputField.isFocused);
+        }  
+    }
+
     void OnGUI()
     {
         if (IMEActive)
@@ -296,112 +304,9 @@ public class ServoUnityController : MonoBehaviour
         } // IMEActive
     }
 
-    const float millisecsToFullmovementFactor = 200.0f;
-    const float moveAroundMetresPerSecond = 1.5f;
-    const float lookAroundDegreesPerSecond = 90.0f;
-    private Vector3 moveAroundFactor = new Vector3(0.0f, 0.0f, 0.0f); // Normalised move around input.
-    private Vector2 lookAroundFactor = new Vector2(0.0f, 0.0f); // Normalised look around input.
-
     void Update()
     {
         servo_unity_plugin.ServoUnityFlushLog();
-
-        //
-        // Process keyboard-driven motion of the camera.
-        //
-
-        bool keyboardOKForMovement = !IMEActive && !navbarController.URLOrSearchInputField.isFocused;
-        float accelFactor = Time.deltaTime*1000.0f / millisecsToFullmovementFactor;
-
-        Vector3 excursion = new Vector3(Mathf.Abs(moveAroundFactor.x), Mathf.Abs(moveAroundFactor.y), Mathf.Abs(moveAroundFactor.z));
-        Vector3 excursionDirection = new Vector3(Mathf.Sign(moveAroundFactor.x), Mathf.Sign(moveAroundFactor.y), Mathf.Sign(moveAroundFactor.z));
-
-        if (keyboardOKForMovement && Input.GetKey(KeyCode.D))
-        {
-            moveAroundFactor.x += accelFactor;
-            if (moveAroundFactor.x > 1.0f) moveAroundFactor.x = 1.0f;
-        }
-        else if (keyboardOKForMovement && Input.GetKey(KeyCode.A))
-        {
-            moveAroundFactor.x -= accelFactor;
-            if (moveAroundFactor.x < 1.0f) moveAroundFactor.x = -1.0f;
-        }
-        else if (excursion.x > 0.0f)
-        {
-            moveAroundFactor.x -= Mathf.Min(accelFactor, excursion.x) * excursionDirection.x;
-        }
-
-        if (keyboardOKForMovement && Input.GetKey(KeyCode.Space))
-        {
-            moveAroundFactor.y += accelFactor;
-            if (moveAroundFactor.y > 1.0f) moveAroundFactor.y = 1.0f;
-        }
-        else if (keyboardOKForMovement && Input.GetKey(KeyCode.C))
-        {
-            moveAroundFactor.y -= accelFactor;
-            if (moveAroundFactor.y < 1.0f) moveAroundFactor.y = -1.0f;
-        }
-        else if (excursion.y > 0.0f)
-        {
-            moveAroundFactor.y -= Mathf.Min(accelFactor, excursion.y) * excursionDirection.y;
-        }
-
-        if (keyboardOKForMovement && Input.GetKey(KeyCode.W))
-        {
-            moveAroundFactor.z += accelFactor;
-            if (moveAroundFactor.z > 1.0f) moveAroundFactor.z = 1.0f;
-        }
-        else if (keyboardOKForMovement && Input.GetKey(KeyCode.S))
-        {
-            moveAroundFactor.z -= accelFactor;
-            if (moveAroundFactor.z < 1.0f) moveAroundFactor.z = -1.0f;
-        }
-        else if (excursion.z > 0.0f)
-        {
-            moveAroundFactor.z -= Mathf.Min(accelFactor, excursion.z) * excursionDirection.z;
-        }
-
-        Vector3 lookExcursionDirection = new Vector2(Mathf.Sign(lookAroundFactor.x), Mathf.Sign(lookAroundFactor.y));
-        Vector3 lookExcursion = new Vector3(Mathf.Abs(lookAroundFactor.x), Mathf.Abs(lookAroundFactor.y));
-            
-        if (keyboardOKForMovement && Input.GetKey(KeyCode.DownArrow))
-        {
-            lookAroundFactor.x += accelFactor;
-            if (lookAroundFactor.x > 1.0f) lookAroundFactor.x = 1.0f;
-        }
-        else if (keyboardOKForMovement && Input.GetKey(KeyCode.UpArrow))
-        {
-            lookAroundFactor.x -= accelFactor;
-            if (lookAroundFactor.x < 1.0f) lookAroundFactor.x = -1.0f;
-        }
-        else if (lookExcursion.x > 0.0f)
-        {
-            lookAroundFactor.x -= Mathf.Min(accelFactor, lookExcursion.x) * lookExcursionDirection.x;
-        }
-
-        mainCamera.transform.Translate(moveAroundFactor * moveAroundMetresPerSecond * Time.deltaTime);
-
-        if (keyboardOKForMovement && Input.GetKey(KeyCode.RightArrow))
-        {
-            lookAroundFactor.y += accelFactor;
-            if (lookAroundFactor.y > 1.0f) lookAroundFactor.y = 1.0f;
-        }
-        else if (keyboardOKForMovement && Input.GetKey(KeyCode.LeftArrow))
-        {
-            lookAroundFactor.y -= accelFactor;
-            if (lookAroundFactor.y < 1.0f) lookAroundFactor.y = -1.0f;
-        }
-        else if (lookExcursion.y > 0.0f)
-        {
-            lookAroundFactor.y -= Mathf.Min(accelFactor, lookExcursion.y) * lookExcursionDirection.y;
-        }
-
-        Vector3 orientation = mainCamera.transform.eulerAngles;
-        orientation.z = 0.0f;
-        orientation.x += lookAroundFactor.x * lookAroundDegreesPerSecond * Time.deltaTime;
-        orientation.y += lookAroundFactor.y * lookAroundDegreesPerSecond * Time.deltaTime;
-        mainCamera.transform.eulerAngles = orientation;
-
     }
 
     //
