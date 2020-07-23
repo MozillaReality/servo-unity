@@ -112,16 +112,16 @@ public class ServoUnityLaserPointer : ServoUnityPointer
                 holder.SetActive(true);
                 laserBeam.SetActive(true);
 
-                buttonUp = interactWithUI.GetStateUp(pose.inputSource);
-                buttonDown = interactWithUI.GetStateDown(pose.inputSource);
-                button = interactWithUI.GetState(pose.inputSource);
+                buttonUp[0] = interactWithUI.GetStateUp(pose.inputSource);
+                buttonDown[0] = interactWithUI.GetStateDown(pose.inputSource);
+                button[0] = interactWithUI.GetState(pose.inputSource);
                 scrollDelta = scroll2D.GetAxis(pose.inputSource);
                 Ray ray = new Ray(transform.position, transform.forward);
 
                 base.Update();
         
                 // Set the laser beam length, and position the centroid half-way out.
-                if (button)
+                if (button[0])
                 {
                     laserBeam.transform.localScale = new Vector3(clickThicknesss, clickThicknesss, rayLength);
                     laserBeam.GetComponent<MeshRenderer>().material.color = clickColor;
