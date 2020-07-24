@@ -14,6 +14,7 @@
 		4A92A81A2464FBE000E47295 /* servo_unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A92A8142464FBE000E47295 /* servo_unity.cpp */; };
 		4A94C56E24BFAA5500BA301C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 4A94C56D24BFAA5500BA301C /* utils.c */; };
 		4A9AA0F724A5D584001948F6 /* libsimpleservo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A64971924A2E2AC006447CA /* libsimpleservo2.dylib */; };
+		4AE52CA024CA8F6A0060E44A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4AE52C9F24CA8F6A0060E44A /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		4A92A8162464FBE000E47295 /* servo_unity_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = servo_unity_c.h; path = ../servo_unity_c.h; sourceTree = "<group>"; };
 		4A94C56C24BFAA5500BA301C /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../utils.h; sourceTree = "<group>"; };
 		4A94C56D24BFAA5500BA301C /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = utils.c; path = ../utils.c; sourceTree = "<group>"; };
+		4AE52C9F24CA8F6A0060E44A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 		4A92A7FC2464FB8400E47295 = {
 			isa = PBXGroup;
 			children = (
+				4AE52C9F24CA8F6A0060E44A /* README.md */,
 				4A92A8162464FBE000E47295 /* servo_unity_c.h */,
 				4A609D0524C559060079D8A1 /* servo_unity_internal.h */,
 				4A92A8142464FBE000E47295 /* servo_unity.cpp */,
@@ -146,6 +149,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AE52CA024CA8F6A0060E44A /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
