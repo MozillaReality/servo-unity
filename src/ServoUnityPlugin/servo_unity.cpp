@@ -87,13 +87,13 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
                 SERVOUNITYLOGi("OnGraphicsDeviceEvent(kUnityGfxDeviceEventInitialize) called on thread %" PRIu64 ".\n", getThreadID());
                 s_RendererType = s_Graphics->GetRenderer();
                 switch (s_RendererType) {
-#ifdef SUPPORT_D3D11
+#if SUPPORT_D3D11
                     case kUnityGfxRendererD3D11:
                         SERVOUNITYLOGi("Using DirectX 11 renderer.\n");
                         ServoUnityWindowDX11::initDevice(s_UnityInterfaces);
                         break;
 #endif // SUPPORT_D3D11
-#ifdef SUPPORT_OPENGL_CORE
+#if SUPPORT_OPENGL_CORE
                     case kUnityGfxRendererOpenGLCore:
                         SERVOUNITYLOGi("Using OpenGL renderer.\n");
                         ServoUnityWindowGL::initDevice();
@@ -109,12 +109,12 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
 		case kUnityGfxDeviceEventShutdown:
             {
                 switch (s_RendererType) {
-#ifdef SUPPORT_D3D11
+#if SUPPORT_D3D11
                     case kUnityGfxRendererD3D11:
                     ServoUnityWindowDX11::finalizeDevice();
                     break;
 #endif // SUPPORT_D3D11
-#ifdef SUPPORT_OPENGL_CORE
+#if SUPPORT_OPENGL_CORE
                     case kUnityGfxRendererOpenGLCore:
                     ServoUnityWindowGL::finalizeDevice();
                     break;
@@ -257,13 +257,13 @@ int servoUnityGetWindowCount(void)
 bool servoUnityRequestNewWindow(int uidExt, int widthPixelsRequested, int heightPixelsRequested)
 {
 	std::unique_ptr<ServoUnityWindow> window;
-#ifdef SUPPORT_D3D11
+#if SUPPORT_D3D11
     if (s_RendererType == kUnityGfxRendererD3D11) {
         SERVOUNITYLOGi("Servo window requested with DirectX 11 renderer.\n");
 		window = std::make_unique<ServoUnityWindowDX11>(s_windowIndexNext++, uidExt, ServoUnityWindow::Size({ widthPixelsRequested, heightPixelsRequested }));
 	} else
 #endif // SUPPORT_D3D11
-#ifdef SUPPORT_OPENGL_CORE
+#if SUPPORT_OPENGL_CORE
     if (s_RendererType == kUnityGfxRendererOpenGLCore) {
         SERVOUNITYLOGi("Servo window requested with OpenGL renderer.\n");
 		window = std::make_unique<ServoUnityWindowGL>(s_windowIndexNext++, uidExt, ServoUnityWindow::Size({ widthPixelsRequested, heightPixelsRequested }));

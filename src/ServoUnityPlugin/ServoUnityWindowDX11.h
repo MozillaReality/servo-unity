@@ -60,6 +60,9 @@ public:
 	// Must be called from render thread.
 	void requestUpdate(float timeDelta) override;
 
+	// Must be called from render thread.
+	void cleanupRenderer() override {}
+
 	int format() override { return m_format; }
 
     void CloseServoWindow() override {}

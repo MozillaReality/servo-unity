@@ -12,8 +12,7 @@
 
 #include <stdlib.h>
 #include "ServoUnityWindowDX11.h"
-#ifdef SUPPORT_D3D11
-#include "servo_unity_c.h"
+#if SUPPORT_D3D11
 #include <d3d11.h>
 #include "IUnityGraphicsD3D11.h"
 #include "servo_unity_log.h"
@@ -78,7 +77,8 @@ bool ServoUnityWindowDX11::init(PFN_WINDOWCREATEDCALLBACK windowCreatedCallback,
     m_windowCreatedCallback = windowCreatedCallback;
     m_windowResizedCallback = windowResizedCallback;
     m_browserEventCallback = browserEventCallback;
-    // TODO: Get Servo texture handle into m_servoTexHandle.
+    // TODO: If Servo ever supports DirectX, we'd need to add a means
+	// to get Servo's texture handle into m_servoTexHandle.
     if (!m_servoTexHandle) {
 		SERVOUNITYLOGe("Error: Servo texture handle is null.\n");
 		return false;
@@ -124,8 +124,8 @@ void* ServoUnityWindowDX11::nativePtr() {
 
 void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
 
-	if (!m_fxTexPtr || !m_unityTexPtr) {
-		SERVOUNITYLOGi("ServoUnityWindowDX11::requestUpdate() m_fxTexPtr=%p, m_unityTexPtr=%p.\n", m_fxTexPtr, m_unityTexPtr);
+	if (!m_servoTexPtr || !m_unityTexPtr) {
+		SERVOUNITYLOGi("ServoUnityWindowDX11::requestUpdate() m_servoTexPtr=%p, m_unityTexPtr=%p.\n", m_servoTexPtr, m_unityTexPtr);
 		return;
 	}
 
@@ -135,20 +135,16 @@ void ServoUnityWindowDX11::requestUpdate(float timeDelta) {
 	D3D11_TEXTURE2D_DESC descUnity = { 0 };
 	D3D11_TEXTURE2D_DESC descServo = { 0 };
 
-	m_fxTexPtr->GetDesc(&descServo);
+	m_servoTexPtr->GetDesc(&descServo);
 	((ID3D11Texture2D*)m_unityTexPtr)->GetDesc(&descUnity);
 	//SERVOUNITYLOGd("Unity texture is %dx%d, DXGI_FORMAT=%d (ServoUnityTextureFormat=%d), MipLevels=%d, D3D11_USAGE Usage=%d, BindFlags=%d, CPUAccessFlags=%d, MiscFlags=%d\n", descUnity.Width, descUnity.Height, descUnity.Format, getServoUnityTextureFormatForDXGIFormat(descUnity.Format), descUnity.MipLevels, descUnity.Usage, descUnity.BindFlags, descUnity.CPUAccessFlags, descUnity.MiscFlags);
-	if (descservoUnity.Width != descUnity.Width || descServo.Height != descServo.Height) {
+	if (descServo.Width != descUnity.Width || descServo.Height != descServo.Height) {
 		SERVOUNITYLOGe("Error: Unity texture size %dx%d does not match Servo texture size %dx%d.\n", descUnity.Width, descUnity.Height, descServo.Width, descServo.Height);
 	} else {
-		ctx->CopyResource((ID3D11Texture2D*)m_unityTexPtr, m_fxTexPtr);
+		ctx->CopyResource((ID3D11Texture2D*)m_unityTexPtr, m_servoTexPtr);
 	}
 
 	ctx->Release();
-}
-
-void ServoUnityWindowDX11::CloseServoWindow() {
-    // TODO: Send message to Servo.
 }
 
 void ServoUnityWindowDX11::pointerEnter() {

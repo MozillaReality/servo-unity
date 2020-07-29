@@ -11,7 +11,7 @@
 //
 
 #include "ServoUnityWindowGL.h"
-#ifdef SUPPORT_OPENGL_CORE
+#if SUPPORT_OPENGL_CORE
 
 #ifdef __APPLE__
 #  include <OpenGL/gl3.h>
@@ -188,12 +188,12 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
         // };
         // .vslogger_mod_list = pfilters;
         // .vslogger_mod_size = sizeof(pfilters) / sizeof(pfilters[0]);
-        char *args = nullptr;
-        const char *arg_ll = nullptr;
-        const char *arg_ll_debug = "debug";
-        const char *arg_ll_info = "info";
-        const char *arg_ll_warn = "warn";
-        const char *arg_ll_error = "error";
+        const char *args = nullptr;
+		std::string arg_ll = std::string();
+		std::string arg_ll_debug = "debug";
+		std::string arg_ll_info = "info";
+		std::string arg_ll_warn = "warn";
+		std::string arg_ll_error = "error";
         switch (servoUnityLogLevel) {
             case SERVO_UNITY_LOG_LEVEL_DEBUG: arg_ll = arg_ll_debug; break;
             case SERVO_UNITY_LOG_LEVEL_INFO: arg_ll = arg_ll_info; break;
@@ -201,46 +201,46 @@ void ServoUnityWindowGL::requestUpdate(float timeDelta) {
             case SERVO_UNITY_LOG_LEVEL_ERROR: arg_ll = arg_ll_error; break;
             default: break;
         }
-        if (arg_ll) asprintf(&args, "--vslogger-level %s", arg_ll);
+        if (!arg_ll.empty()) args = (std::string("--vslogger-level ") + arg_ll).c_str();
 
         CInitOptions cio {
-            .args = args,
-            .width = m_size.w,
-            .height = m_size.h,
-            .density = 1.0f,
-            .vslogger_mod_list = nullptr,
-            .vslogger_mod_size = 0,
-            .native_widget = nullptr
+            /*.args =*/ args,
+            /*.width =*/ m_size.w,
+            /*.height =*/ m_size.h,
+            /*.density =*/ 1.0f,
+            /*.vslogger_mod_list =*/ nullptr,
+            /*.vslogger_mod_size =*/ 0,
+            /*.native_widget =*/ nullptr,
+			/*.prefs =*/ nullptr
         };
         CHostCallbacks chc {
-            .on_load_started = on_load_started,
-            .on_load_ended = on_load_ended,
-            .on_title_changed = on_title_changed,
-            .on_allow_navigation = on_allow_navigation,
-            .on_url_changed = on_url_changed,
-            .on_history_changed = on_history_changed,
-            .on_animating_changed = on_animating_changed,
-            .on_shutdown_complete = on_shutdown_complete,
-            .on_ime_show = on_ime_show,
-            .on_ime_hide = on_ime_hide,
-            .get_clipboard_contents = get_clipboard_contents,
-            .set_clipboard_contents = set_clipboard_contents,
-            .on_media_session_metadata = on_media_session_metadata,
-            .on_media_session_playback_state_change = on_media_session_playback_state_change,
-            .on_media_session_set_position_state = on_media_session_set_position_state,
-            .prompt_alert = prompt_alert,
-            .prompt_ok_cancel = prompt_ok_cancel,
-            .prompt_yes_no = prompt_yes_no,
-            .prompt_input = prompt_input,
-            .on_devtools_started = on_devtools_started,
-            .show_context_menu = show_context_menu,
-            .on_log_output = on_log_output
+            /*.on_load_started =*/ on_load_started,
+            /*.on_load_ended =*/ on_load_ended,
+            /*.on_title_changed =*/ on_title_changed,
+            /*.on_allow_navigation =*/ on_allow_navigation,
+            /*.on_url_changed =*/ on_url_changed,
+            /*.on_history_changed =*/ on_history_changed,
+            /*.on_animating_changed =*/ on_animating_changed,
+            /*.on_shutdown_complete =*/ on_shutdown_complete,
+            /*.on_ime_show =*/ on_ime_show,
+            /*.on_ime_hide =*/ on_ime_hide,
+            /*.get_clipboard_contents =*/ get_clipboard_contents,
+            /*.set_clipboard_contents =*/ set_clipboard_contents,
+            /*.on_media_session_metadata =*/ on_media_session_metadata,
+            /*.on_media_session_playback_state_change =*/ on_media_session_playback_state_change,
+            /*.on_media_session_set_position_state =*/ on_media_session_set_position_state,
+            /*.prompt_alert =*/ prompt_alert,
+            /*.prompt_ok_cancel =*/ prompt_ok_cancel,
+            /*.prompt_yes_no =*/ prompt_yes_no,
+            /*.prompt_input =*/ prompt_input,
+            /*.on_devtools_started =*/ on_devtools_started,
+            /*.show_context_menu =*/ show_context_menu,
+            /*.on_log_output =*/ on_log_output
         };
 
         // init_with_gl will capture the active GL context for later use by fill_gl_texture.
         // This will be the Unity GL context.
         init_with_gl(cio, wakeup, chc);
-        free(args);
 
         m_servoGLInited = true;
     }
@@ -360,7 +360,7 @@ void ServoUnityWindowGL::pointerOver(int x, int y) {
 	SERVOUNITYLOGd("ServoUnityWindowGL::pointerOver(%d, %d)\n", x, y);
     if (!m_servoGLInited) return;
 
-    runOnServoThread([=] {mouse_move(x, y);});
+    runOnServoThread([=] {mouse_move((float)x, (float)y);});
 }
 
 static CMouseButton getServoButton(int button) {
@@ -384,13 +384,13 @@ static CMouseButton getServoButton(int button) {
 void ServoUnityWindowGL::pointerPress(int button, int x, int y) {
 	SERVOUNITYLOGd("ServoUnityWindowGL::pointerPress(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
-    runOnServoThread([=] {mouse_down(x, y, getServoButton(button));});
+    runOnServoThread([=] {mouse_down((float)x, (float)y, getServoButton(button));});
 }
 
 void ServoUnityWindowGL::pointerRelease(int button, int x, int y) {
 	SERVOUNITYLOGd("ServoUnityWindowGL::pointerRelease(%d, %d, %d)\n", button, x, y);
     if (!m_servoGLInited) return;
-    runOnServoThread([=] {mouse_up(x, y, getServoButton(button));});
+    runOnServoThread([=] {mouse_up((float)x, (float)y, getServoButton(button));});
 }
 
 void ServoUnityWindowGL::pointerClick(int button, int x, int y) {
@@ -740,7 +740,7 @@ void ServoUnityWindowGL::on_devtools_started(CDevtoolsServerState result, unsign
 void ServoUnityWindowGL::show_context_menu(const char *title, const char *const *items_list, uint32_t items_size)
 {
     SERVOUNITYLOGi("servo callback show_context_menu: title:%s\n", title);
-    for (int i = 0; i < items_size; i++) {
+    for (int i = 0; i < (int)items_size; i++) {
         SERVOUNITYLOGi("    item %n:%s\n", i, items_list[i]);
     }
     SERVOUNITYLOGw("UNIMPLEMENTED\n");

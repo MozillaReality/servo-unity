@@ -23,7 +23,7 @@
     <ProjectGuid>{2A380EE0-0A62-4904-B635-E4DF00C8F57D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ServoUnityPlugin</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>servo_unity</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;SERVO_UNITY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2019.3.0a12\Editor\Data\PluginAPI;$(ProjectDir)depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2020.1.0f1\Editor\Data\PluginAPI;$(ProjectDir)..\depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>_DEBUG;SERVO_UNITY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2019.3.0a12\Editor\Data\PluginAPI;$(ProjectDir)depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2020.1.0f1\Editor\Data\PluginAPI;$(ProjectDir)..\depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;SERVO_UNITY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2019.3.0a12\Editor\Data\PluginAPI;$(ProjectDir)depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2020.1.0f1\Editor\Data\PluginAPI;$(ProjectDir)..\depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -154,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;SERVO_UNITY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2019.3.0a12\Editor\Data\PluginAPI;$(ProjectDir)depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Unity\Hub\Editor\2020.1.0f1\Editor\Data\PluginAPI;$(ProjectDir)..\depends\windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -169,8 +169,9 @@
     <ClCompile Include="..\depends\windows\include\gl3w\gl3w.c" />
     <ClCompile Include="..\servo_unity_log.c" />
     <ClCompile Include="..\servo_unity.cpp" />
-    <ClCompile Include="..\FxRWindowDX11.cpp" />
-    <ClCompile Include="..\FxRWindowGL.cpp" />
+    <ClCompile Include="..\ServoUnityWindowDX11.cpp" />
+    <ClCompile Include="..\ServoUnityWindowGL.cpp" />
+    <ClCompile Include="..\utils.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include=".editorconfig" />
@@ -178,10 +179,13 @@
   <ItemGroup>
     <ClInclude Include="..\depends\windows\include\gl3w\gl3w.h" />
     <ClInclude Include="..\ServoUnityWindow.h" />
+    <ClInclude Include="..\servo_unity_internal.h" />
     <ClInclude Include="..\servo_unity_log.h" />
     <ClInclude Include="..\servo_unity_c.h" />
     <ClInclude Include="..\ServoUnityWindowDX11.h" />
     <ClInclude Include="..\ServoUnityWindowGL.h" />
+    <ClInclude Include="..\simpleservo.h" />
+    <ClInclude Include="..\utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\ServoUnity\Assets\Scripts\ServoUnityPlugin.cs">
@@ -196,6 +200,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\servo\target\release\simpleservo2.dll.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
