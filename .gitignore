@@ -59,3 +59,4 @@ src/ServoUnityPlugin/Windows/.vs/
 *.vcxproj.user
 
 #### Other
+test/

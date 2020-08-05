@@ -58,6 +58,14 @@ std::string s_param_SearchURI = SEARCH_URI_DEFAULT;
 std::string s_param_Homepage = HOMEPAGE_DEFAULT;
 
 // --------------------------------------------------------------------------
+//  Misc globals
+
+#ifdef _WIN32
+int NvOptimusEnablement = 1;
+int AmdPowerXpressRequestHighPerformance = 1;
+#endif
+
+// --------------------------------------------------------------------------
 
 extern "C" void	UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces* unityInterfaces)
 {
